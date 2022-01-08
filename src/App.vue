@@ -72,7 +72,7 @@
             class="drag"
             flat
         >
-            <div class="d-flex align-center">
+            <div style="width: 100%" v-if="percent > 0">
 <!--                <v-img-->
 <!--                    class="mr-3"-->
 <!--                    width="24"-->
@@ -87,6 +87,15 @@
 <!--                >-->
 <!--                    <h4>年度报告生成器</h4>-->
 <!--                </v-badge>-->
+
+<!--                进度条-->
+                <v-progress-linear
+                    v-model="percent"
+                    height="25"
+                    dark
+                >
+                    <strong>{{ percent }}%</strong>
+                </v-progress-linear>
             </div>
 
             <v-spacer></v-spacer>
@@ -139,12 +148,13 @@
 
 <script>
 const { ipcRenderer } = require('electron')
+import {mapState} from 'vuex'
 
 export default {
     name: 'App',
 
     data: () => ({
-        selectedItem: 0,
+        selectedItem: 0
     }),
 
     mounted() {
@@ -172,7 +182,9 @@ export default {
             ipcRenderer.invoke('min-app')
         }
     },
-
+    computed:{
+        ...mapState(['percent'])
+    }
 };
 </script>
 

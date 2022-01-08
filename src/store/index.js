@@ -14,7 +14,6 @@ export default new Vuex.Store({
     },
     mutations: {
         updatePercent(state, percent){
-            console.log('进度条:', percent)
             state.percent = percent
             state.showLoadingBar = true
         },
