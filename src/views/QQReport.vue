@@ -62,7 +62,7 @@
                         <date-picker :clearable="false" v-model="setting.month" value-type="timestamp" type="month" placeholder="选择月份"></date-picker>
                     </section>
                     <section v-if="setting.type === 'ranger'">
-                        <date-picker :clearable="false" v-model="setting.ranger" range></date-picker>
+                        <date-picker :clearable="false" v-model="setting.ranger" value-type="timestamp" range></date-picker>
                     </section>
                 </div>
             </v-card-text>

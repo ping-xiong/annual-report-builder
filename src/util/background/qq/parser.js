@@ -1,4 +1,4 @@
-import nodejieba from "nodejieba";
+import * as dayjs from 'dayjs'
 
 const parser = {}
 
@@ -35,7 +35,12 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting){
     // let filterReg1 = /[\x21-\x2f\x3a-\x40\x5b-\x60\x7B-\x7F]/
     // let filterReg2 = /[\u3002|\uff1f|\uff01|\uff0c|\u3001|\uff1b|\uff1a|\u201c|\u201d|\u2018|\u2019|\uff08|\uff09|\u300a|\u300b|\u3008|\u3009|\u3010|\u3011|\u300e|\u300f|\u300c|\u300d|\ufe43|\ufe44|\u3014|\u3015|\u2026|\u2014|\uff5e|\ufe4f|\uffe5]/
 
-    let isSystemMsg = false
+    let isSkip = false
+    const customParseFormat = require('dayjs/plugin/customParseFormat');
+    dayjs.extend(customParseFormat)
+
+    const isBetween = require('dayjs/plugin/isBetween');
+    dayjs.extend(isBetween)
 
     let cutWords = {}
     readLine(path).go(async function (data, next) {
@@ -47,6 +52,25 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting){
                     let dateTime = dateTimeReg.exec(dataWithoutPic)[0]
                     lastDate = dateReg.exec(dateTime)[0]
                     lastTime = timeReg.exec(dateTime)[0]
+
+                    let dateObj = dayjs(dateTime, "YYYY-MM-DD HH-mm-ss")
+
+                    // 判断时间是否需要跳过
+                    switch (setting.type) {
+                        case 'year':
+                            if (dateObj.year() !== dayjs(setting.year).year()){
+                                isSkip = true
+                            }
+                            break;
+                        case 'month':
+                            if (dateObj.month() !== dayjs(setting.month).month()){
+                                isSkip = true
+                            }
+                            break;
+                        case 'ranger':
+                            dateObj.isBetween(dayjs(setting.ranger[0]), dayjs(setting.ranger[1]))
+                            break;
+                    }
 
                     // 提取QQ和昵称
                     let qqName = dataWithoutPic.replace(dateTimeReg, '')
@@ -64,12 +88,12 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting){
 
                     // QQ 是 10000 的是撤回消息，不解析
                     if (lastQQ === '10000' || lastQQ === 10000){
-                        isSystemMsg = true
+                        isSkip = true
                     }
                 }else{
-                    // 跳过系统消息
-                    if (isSystemMsg){
-                        isSystemMsg = false
+                    // 需要跳过的消息: 系统消息，不符合时间范围的消息，不符合报告类型的消息
+                    if (isSkip){
+                        isSkip = false
                     }else{
                         // 其他内容
                         // 前面8条内容为备注，只提取群名称
@@ -91,7 +115,7 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting){
                             // 过滤艾特: @
                             dataWithoutPic = dataWithoutPic.replace(/^((https|http|ftp|rtsp|mms)?:\/\/)[^\s]+/, '').replace(/@.*?(?<=\s)/, '')
 
-                            let result = nodejieba.extract(dataWithoutPic, commonSetting.extractNum)
+                            let result = nodejieba.extract(dataWithoutPic, parseInt(commonSetting.extractNum))
                             // console.log(result)
 
                             // 空格，标点符号过滤，数字，不插入数据库

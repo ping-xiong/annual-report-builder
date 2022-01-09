@@ -145,7 +145,7 @@
         </v-app-bar>
 
         <v-main>
-            <div class="pa-3">
+            <div class="pa-3 fill-height">
 <!--                <keep-alive>-->
 <!--                    <router-view/>-->
 <!--                </keep-alive>-->
@@ -163,7 +163,7 @@ export default {
     name: 'App',
 
     data: () => ({
-        selectedItem: 0
+
     }),
 
     mounted() {
@@ -194,8 +194,18 @@ export default {
             ipcRenderer.invoke('min-app')
         }
     },
+
     computed:{
-        ...mapState(['percent'])
+        ...mapState(['percent']),
+        // 激活的菜单项
+        selectedItem:{
+            get(){
+                return this.$store.state.selectedItem
+            },
+            set(value){
+                this.$store.commit('updateSelectedItem', value)
+            }
+        }
     }
 };
 </script>

@@ -1,11 +1,17 @@
 <template>
-    <div>
-        年度报告预览
+    <div class="fill-height">
+        <empty></empty>
     </div>
 </template>
 
 <script>
+
+import empty from "@/components/empty"
+
 export default {
-    name: 'Home'
+    name: 'Home',
+    components:{
+        empty
+    }
 }
 </script>
