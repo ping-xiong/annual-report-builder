@@ -44,6 +44,15 @@
                         </v-list-item-content>
                     </v-list-item>
 
+                    <v-list-item link @click="toPage('/setting')">
+                        <v-list-item-icon class="mr-0">
+                            <v-icon>mdi-cog</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content class="center-text">
+                            <v-list-item-title>通用设置</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+
                     <v-list-item link @click="toPage('/help')">
                         <v-list-item-icon class="mr-0">
                             <v-icon>mdi-help-box</v-icon>
@@ -160,6 +169,9 @@ export default {
     mounted() {
         ipcRenderer.on('update-percent', (e, percent) => {
             this.$store.commit('updatePercent', percent)
+        })
+        ipcRenderer.on('report-finish', () => {
+            this.$toast.success('报告生成完成')
         })
     },
 

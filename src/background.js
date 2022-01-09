@@ -128,8 +128,8 @@ ipcMain.handle('select-file', async (event) => {
 })
 
 // 处理文件
-ipcMain.handle('qq-report', async (event, path, lineCount, setting) => {
-    parser.parse(path, lineCount, setting, win)
+ipcMain.handle('qq-report', async (event, path, lineCount, setting, commonSetting) => {
+    parser.parse(path, lineCount, setting, win, commonSetting)
     console.log(path, lineCount, setting)
 })
 

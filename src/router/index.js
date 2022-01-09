@@ -16,6 +16,11 @@ const routes = [
         component: () => import('../views/QQReport.vue')
     },
     {
+        path: '/setting',
+        name: 'Setting',
+        component: () => import('../views/Setting.vue')
+    },
+    {
         path: '/help',
         name: 'Help',
         component: () => import('../views/Help.vue')

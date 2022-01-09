@@ -165,7 +165,7 @@ export default {
             }
 
             // 生成报告
-            let result = await ipcRenderer.invoke('qq-report', this.path, this.lineCount, this.setting)
+            let result = await ipcRenderer.invoke('qq-report', this.path, this.lineCount, this.setting, this.$store.state.setting)
             console.log(result)
             // this.$toast.success('Info toast')
         }
