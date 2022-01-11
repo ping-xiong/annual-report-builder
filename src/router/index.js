@@ -16,6 +16,11 @@ const routes = [
         component: () => import('../views/QQReport.vue')
     },
     {
+        path: '/wechat',
+        name: 'Wechat',
+        component: () => import('../views/WechatReport.vue')
+    },
+    {
         path: '/setting',
         name: 'Setting',
         component: () => import('../views/Setting.vue')

@@ -44,6 +44,15 @@
                         </v-list-item-content>
                     </v-list-item>
 
+                    <v-list-item link @click="toPage('/wechat')">
+                        <v-list-item-icon class="mr-0">
+                            <v-icon>mdi-wechat</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content class="center-text">
+                            <v-list-item-title>微信年度报告</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+
                     <v-list-item link @click="toPage('/setting')">
                         <v-list-item-icon class="mr-0">
                             <v-icon>mdi-cog</v-icon>

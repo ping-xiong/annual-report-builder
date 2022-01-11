@@ -109,6 +109,8 @@
         <v-card outlined flat>
             <v-card-subtitle class="d-flex">
                 <span>最后一步</span>
+                <v-spacer></v-spacer>
+                <a href="javascript:;" @click="toSetting">排除的QQ号数：{{excludeQQ.length}}</a>
             </v-card-subtitle>
             <v-card-text class="d-flex flex-column">
                 <v-btn color="primary" @click="generateReport">立即生成报告</v-btn>
@@ -163,11 +165,27 @@ export default {
                 this.$toast.error('请先选择文件')
                 return
             }
+            let qqReg = /[1-9]([0-9]{5,11})/
+            if (this.setting.report === 'person' && !qqReg.test(this.setting.targetQQ)){
+                this.$toast.error('QQ格式不正确，请重新输入')
+                return
+            }
 
             // 生成报告
             let result = await ipcRenderer.invoke('qq-report', this.path, this.lineCount, this.setting, this.$store.state.setting)
             console.log(result)
             // this.$toast.success('Info toast')
+        },
+        toSetting(){
+            this.$store.commit('updateSelectedItem', 3)
+            this.$router.replace('/setting')
+        }
+    },
+    computed:{
+        excludeQQ:{
+            get(){
+                return this.$store.state.setting.excludeQQ
+            }
         }
     }
 }
