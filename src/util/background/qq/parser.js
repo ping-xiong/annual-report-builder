@@ -1,4 +1,5 @@
 import * as dayjs from 'dayjs'
+import {readLine} from "lei-stream";
 
 const parser = {}
 
@@ -54,7 +55,7 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting) {
     dayjs.extend(isBetween)
 
     // 利用数组自定义顺序，来判断消息是不是最晚，这里规定凌晨5点为最晚
-    let latestTimeArr = [5,4,3,2,1,0,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6]
+    let latestTimeArr = [5, 4, 3, 2, 1, 0, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6]
 
     // 分析数据临时储存
     let cutWords = {} // 分词
@@ -84,6 +85,7 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting) {
         content: null, // 具体内容
         count: 0 // 复读次数
     } // 复读机具体
+    let longestContent = '' // 最长的内容
 
     // 日志记录器
     const winston = require('winston');
@@ -97,13 +99,22 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting) {
     });
 
 
-    // 一行一行读取文件
+    // 有些消息是多行的，需要拼接
     let fullContent = ''
     let hasNext = false
 
     let dataWithoutPic = ''
+    // 一行一行读取文件
     readLine(path).go(async function (data, next) {
         try {
+            // 单独提取群昵称
+            if (curCount < 8) {
+                if (data.indexOf('消息对象') !== -1) {
+                    let groupNameReg = /(?<=消息对象:).+/
+                    groupName = groupNameReg.exec(data)[0]
+                }
+            }
+
             dataWithoutPic = data.replace('\r', '')
             // 删除换行符和图片
             if (dataWithoutPic.length > 0) {
@@ -120,112 +131,111 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting) {
                     }
                 }
 
-                if (hasNext){
+                if (hasNext) {
                     // 拼接聊天内容
                     fullContent += data
                 }
 
                 // 处理消息
-                if (!hasNext && fullContent.length > 0){
+                if (!hasNext && fullContent.length > 0) {
                     // 需要跳过的消息: 系统消息，不符合时间范围的消息，不符合报告类型的消息
                     if (isSkip) {
                         isSkip = false
                     } else {
                         // 其他内容
-                        // 前面8条内容为备注，只提取群名称
-                        if (curCount < 8) {
 
-                            if (data.indexOf('消息对象') !== -1) {
-                                let groupNameReg = /(?<=消息对象:).+/
-                                groupName = groupNameReg.exec(data)[0]
+                        // 提取艾特的人
+                        let atArr = fullContent.match(/(?<=@).*?(?<=\s)/g)
+                        if (atArr == null) {
+                            atArr = []
+                        }
+
+                        // 提取图片数量
+                        let imgs = (fullContent.match(new RegExp("[图片]", "g")) || []).length
+
+                        // 过滤地址: http
+                        // 过滤艾特: @
+                        dataWithoutPic = fullContent.replace('\r', '')
+                            .replace('[图片]', '')
+                            .replace('[表情]', '')
+                            .replace(/^((https|http|ftp|rtsp|mms)?:\/\/)[^\s]+/, '')
+                            .replace(/@.*?(?<=\s)/, '')
+
+                        let result = nodejieba.extract(dataWithoutPic, parseInt(commonSetting.extractNum))
+                        // console.log(result)
+                        // 统计分词
+                        for (const resultKey in result) {
+                            let value = result[resultKey].word
+
+                            if (cutWords[value]) {
+                                cutWords[value] += 1
+                            } else {
+                                cutWords[value] = 1
+                            }
+                        }
+
+
+                        // 查找成员是否已经存在
+                        let memberIndex = members.findIndex(member => member.qq == lastQQ2)
+                        if (memberIndex !== -1) {
+                            // 已有成员，更新
+                            // 更新昵称
+                            members[memberIndex].name = lastName2
+                            // 更新活跃时间
+                            if (members[memberIndex].lastActive != lastDate2) {
+                                members[memberIndex].actives += 1
+                                members[memberIndex].lastActive = lastDate2
+                            }
+                            // 更新发图数
+                            members[memberIndex].imgs += imgs
+                            // 增加艾特数
+                            members[memberIndex].at += atArr.length
+                            // 增加消息数
+                            members[memberIndex].msgs += 1
+                            // 增加字数
+                            members[memberIndex].words += fullContent.length
+                            // 计算最晚时间
+                            let timeIndex = latestTimeArr.indexOf(dayjs('2022-01-01 ' + lastTime2).hour())
+                            if (members[memberIndex].lateMsgTimeIndex > timeIndex) {
+                                // 更新消息
+                                members[memberIndex].lateMsgTimeIndex = timeIndex
+                                members[memberIndex].lateMsgTime = lastTime2
+                                members[memberIndex].lateMsgContent = fullContent
                             }
 
                         } else {
-                            // 提取艾特的人
-                            let atArr = data.match(/(?<=@).*?(?<=\s)/g)
-                            if (atArr == null) {
-                                atArr = []
-                            }
+                            // 新成员
+                            let newMember = JSON.parse(JSON.stringify(member))
+                            newMember.qq = lastQQ2
+                            newMember.name = lastName2
+                            newMember.lastActive = lastDate2
+                            newMember.actives += 1
+                            // 发图数
+                            newMember.imgs += imgs
+                            // 艾特数
+                            newMember.at += atArr.length
+                            // 消息数
+                            newMember.msgs += 1
+                            // 字数
+                            newMember.words += fullContent.length
+                            // 最晚消息
+                            newMember.lateMsgTimeIndex = latestTimeArr.indexOf(dayjs('2022-01-01 ' + lastTime2).hour())
+                            newMember.lateMsgTime = lastTime2
+                            newMember.lateMsgContent = fullContent
 
-                            // 提取图片数量
-                            let imgs = (data.match(new RegExp("[图片]", "g")) || []).length
-
-                            // 过滤地址: http
-                            // 过滤艾特: @
-                            dataWithoutPic = fullContent.replace('\r', '')
-                                .replace('[图片]', '')
-                                .replace('[表情]', '')
-                                .replace(/^((https|http|ftp|rtsp|mms)?:\/\/)[^\s]+/, '')
-                                .replace(/@.*?(?<=\s)/, '')
-
-                            let result = nodejieba.extract(dataWithoutPic, parseInt(commonSetting.extractNum))
-                            // console.log(result)
-                            // 统计分词
-                            for (const resultKey in result) {
-                                let value = result[resultKey].word
-
-                                if (cutWords[value]) {
-                                    cutWords[value] += 1
-                                } else {
-                                    cutWords[value] = 1
-                                }
-                            }
-
-
-                            // 查找成员是否已经存在
-                            let memberIndex = members.findIndex(member => member.qq == lastQQ2)
-                            if (memberIndex !== -1) {
-                                // 已有成员，更新
-
-                                // 更新活跃时间
-                                if (members[memberIndex].lastActive != lastDate2) {
-                                    members[memberIndex].actives += 1
-                                    members[memberIndex].lastActive = lastDate2
-                                }
-                                // 更新发图数
-                                members[memberIndex].imgs += imgs
-                                // 增加艾特数
-                                members[memberIndex].at += atArr.length
-                                // 增加消息数
-                                members[memberIndex].msgs += 1
-                                // 增加字数
-                                members[memberIndex].words += fullContent.length
-                                // 计算最晚时间
-                                let timeIndex = latestTimeArr.indexOf(dayjs('2022-01-01 ' + lastTime2).hour())
-                                if (members[memberIndex].lateMsgTimeIndex > timeIndex) {
-                                    // 更新消息
-                                    members[memberIndex].lateMsgTimeIndex = timeIndex
-                                    members[memberIndex].lateMsgTime = lastTime2
-                                    members[memberIndex].lateMsgContent = fullContent
-                                }
-
-                            } else {
-                                // 新成员
-                                let newMember = JSON.parse(JSON.stringify(member))
-                                newMember.qq = lastQQ2
-                                newMember.name = lastName2
-                                newMember.lastActive = lastDate2
-                                newMember.actives += 1
-                                // 发图数
-                                newMember.imgs += imgs
-                                // 艾特数
-                                newMember.at += atArr.length
-                                // 消息数
-                                newMember.msgs += 1
-                                // 字数
-                                newMember.words += fullContent.length
-                                // 最晚消息
-                                newMember.lateMsgTimeIndex = latestTimeArr.indexOf(dayjs('2022-01-01 ' + lastTime2).hour())
-                                newMember.lateMsgTime = lastTime2
-                                newMember.lateMsgContent = fullContent
-
-                                members.push(newMember)
-                            }
-
-                            // 统计24小时每个时段消息
-
-                            fullContent = ''
+                            members.push(newMember)
                         }
+
+                        // 统计24小时每个时段消息
+
+
+
+                        // 判断最长的内容
+                        if (fullContent.length > longestContent.length){
+                            longestContent = fullContent
+                        }
+
+                        fullContent = ''
                     }
                 }
 
@@ -278,9 +288,7 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting) {
                     }
 
                     // 个人报告更高优先级，无视排除列表
-                    // isSkip = (setting.report === 'person' && setting.targetQQ === lastQQ)
-
-                    if (setting.report === 'person'){
+                    if (setting.report === 'person') {
                         isSkip = setting.targetQQ !== lastQQ;
                     }
                 }
@@ -315,8 +323,9 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting) {
         win.setProgressBar(1.0, {mode: 'none'})
 
 
-        console.log(TopCutWords)
-        console.log(members)
+        // console.log(TopCutWords)
+        // console.log(members)
+        console.log("群名称", groupName)
     })
 }
 
