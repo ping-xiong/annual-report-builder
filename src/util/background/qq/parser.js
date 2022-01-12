@@ -1,5 +1,4 @@
 import * as dayjs from 'dayjs'
-import {readLine} from "lei-stream";
 
 const parser = {}
 
@@ -54,6 +53,9 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting) {
     const isBetween = require('dayjs/plugin/isBetween');
     dayjs.extend(isBetween)
 
+    // MD5计算库
+    const md5 = require('js-md5')
+
     // 利用数组自定义顺序，来判断消息是不是最晚，这里规定凌晨5点为最晚
     let latestTimeArr = [5, 4, 3, 2, 1, 0, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6]
 
@@ -87,6 +89,49 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting) {
     } // 复读机具体
     let longestContent = '' // 最长的内容
 
+    // 初始化24小时活跃时间表
+    for (let i = 0; i < 24; i++) {
+        activePeriod[i] = 0
+    }
+
+    // 初始化线图数据表，根据统计的年度，月份，天数对应不同的key
+    let maxChartKey = 0
+    switch (setting.type) {
+        case 'year':{
+            // 如果是今年，排除还没到的年份
+            if (dayjs(setting.year) === dayjs().year()){
+                maxChartKey = dayjs().month()
+            }else{
+                maxChartKey = 12
+            }
+            for (let i = 0; i < maxChartKey; i++) {
+                chartData[i] = 0
+            }
+            break;
+        }
+        case 'month':{
+            // 天数，如果是当前月，排除还没到的天数
+            if (dayjs(setting.month).format('YYYY-MM') === dayjs().format('YYYY-MM')){
+                maxChartKey = dayjs().date()
+            }else{
+                // 获取对应月份的天数
+                maxChartKey = dayjs(setting.month).daysInMonth()
+            }
+            for (let i = 1; i <= maxChartKey; i++) {
+                chartData[i] = 0
+            }
+            break;
+        }
+        case 'ranger': {
+            let startDay = dayjs(setting.ranger[0])
+            let diffDay = dayjs(setting.ranger[1]).diff(startDay, 'day')
+            for (let i = 0; i <= diffDay; i++) {
+                chartData[startDay.add(i, 'day').format('MM-DD')] = 0
+            }
+            break;
+        }
+    }
+
     // 日志记录器
     const winston = require('winston');
 
@@ -102,6 +147,11 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting) {
     // 有些消息是多行的，需要拼接
     let fullContent = ''
     let hasNext = false
+
+    // 上一次内容，用于判断是否复读
+    let lastFullContent = null
+    // 连续复读次数
+    let repeatCount = 0
 
     let dataWithoutPic = ''
     // 一行一行读取文件
@@ -133,7 +183,7 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting) {
 
                 if (hasNext) {
                     // 拼接聊天内容
-                    fullContent += data
+                    fullContent += data.replace('\r', '') + "\r\n"
                 }
 
                 // 处理消息
@@ -151,7 +201,7 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting) {
                         }
 
                         // 提取图片数量
-                        let imgs = (fullContent.match(new RegExp("[图片]", "g")) || []).length
+                        let imgCount = (fullContent.match(new RegExp("[图片]", "g")) || []).length
 
                         // 过滤地址: http
                         // 过滤艾特: @
@@ -187,7 +237,7 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting) {
                                 members[memberIndex].lastActive = lastDate2
                             }
                             // 更新发图数
-                            members[memberIndex].imgs += imgs
+                            members[memberIndex].imgs += imgCount
                             // 增加艾特数
                             members[memberIndex].at += atArr.length
                             // 增加消息数
@@ -196,11 +246,30 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting) {
                             members[memberIndex].words += fullContent.length
                             // 计算最晚时间
                             let timeIndex = latestTimeArr.indexOf(dayjs('2022-01-01 ' + lastTime2).hour())
-                            if (members[memberIndex].lateMsgTimeIndex > timeIndex) {
+                            let needUpdate = false
+                            if (members[memberIndex].lateMsgTimeIndex >= timeIndex) {
+                                if (members[memberIndex].lateMsgTimeIndex === timeIndex){
+                                    // 比较分钟和秒数，更大的继续更新
+                                    if (dayjs('2022-01-01 ' + lastTime2).unix() > dayjs('2022-01-01 ' + members[memberIndex].lateMsgTime).unix()){
+                                        // 更新消息
+                                        needUpdate = true
+                                    }
+                                }else{
+                                    // 更新消息
+                                    needUpdate = true
+                                }
+                            }
+
+                            if (needUpdate){
                                 // 更新消息
                                 members[memberIndex].lateMsgTimeIndex = timeIndex
                                 members[memberIndex].lateMsgTime = lastTime2
                                 members[memberIndex].lateMsgContent = fullContent
+                            }
+
+                            if (lastFullContent === fullContent && lastFullContent.indexOf('[图片]') === -1){
+                                // 复读加一
+                                members[memberIndex].repeats += 1
                             }
 
                         } else {
@@ -211,7 +280,7 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting) {
                             newMember.lastActive = lastDate2
                             newMember.actives += 1
                             // 发图数
-                            newMember.imgs += imgs
+                            newMember.imgs += imgCount
                             // 艾特数
                             newMember.at += atArr.length
                             // 消息数
@@ -223,18 +292,70 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting) {
                             newMember.lateMsgTime = lastTime2
                             newMember.lateMsgContent = fullContent
 
+                            if (lastFullContent === fullContent){
+                                // 复读加一
+                                newMember.repeats += 1
+                            }
+
                             members.push(newMember)
                         }
 
                         // 统计24小时每个时段消息
+                        activePeriod[dayjs('2022-01-01 ' + lastTime2).hour()] += 1
 
-
+                        switch (setting.type) {
+                            case 'year':{
+                                chartData[lastDateObj2.month()] += 1
+                                break
+                            }
+                            case 'month':{
+                                chartData[lastDateObj2.date()] += 1
+                                break
+                            }
+                            case 'ranger':{
+                                chartData[lastDateObj2.format('MM-DD')] += 1
+                                break
+                            }
+                        }
 
                         // 判断最长的内容
                         if (fullContent.length > longestContent.length){
                             longestContent = fullContent
                         }
 
+                        // 记录复读次数，排除图片，因为不知道图片是否是同一张
+                        if (lastFullContent === fullContent && lastFullContent.indexOf('[图片]') === -1){
+
+                            repeatCount += 1
+
+                            // let fullContentMD5 = md5(fullContent)
+                            // let repeaterIndex = repeaters.findIndex( repeater => repeater.sign === fullContentMD5 )
+                            // if (repeaterIndex !== -1){
+                            //     // 更新
+                            //     repeaters[repeaterIndex].count += 1
+                            // }else{
+                            //     // 插入新的
+                            //     let newRepeater = JSON.parse(JSON.stringify(repeater))
+                            //     newRepeater.sign = fullContentMD5
+                            //     newRepeater.content = fullContent
+                            //     newRepeater.count = 1
+                            //
+                            //     repeaters.push(newRepeater)
+                            // }
+                        }else{
+                            if (repeatCount > 0){
+                                let newRepeater = JSON.parse(JSON.stringify(repeater))
+                                let fullContentMD5 = md5(fullContent)
+                                newRepeater.sign = fullContentMD5
+                                newRepeater.content = lastFullContent
+                                newRepeater.count = repeatCount
+
+                                repeaters.push(newRepeater)
+                            }
+                            repeatCount = 0
+                        }
+
+                        lastFullContent = fullContent
                         fullContent = ''
                     }
                 }
@@ -259,12 +380,14 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting) {
                             }
                             break;
                         case 'month':
-                            if (lastDateObj.month() !== dayjs(setting.month).month()) {
+                            if (lastDateObj.format('YYYY-MM') !== dayjs(setting.month).format('YYYY-MM')) {
                                 isSkip = true
                             }
                             break;
                         case 'ranger':
-                            lastDateObj.isBetween(dayjs(setting.ranger[0]), dayjs(setting.ranger[1]))
+                            if (!lastDateObj.isBetween(dayjs(setting.ranger[0]), dayjs(setting.ranger[1]))){
+                                isSkip = true
+                            }
                             break;
                     }
 
@@ -312,20 +435,34 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting) {
 
         next()
     }, function () {
-        console.log('end');
-
-        const TopCutWords = Object.fromEntries(
-            Object.entries(cutWords).sort(([, a], [, b]) => a - b).slice(-commonSetting.maxKeywords)
-        );
+        // console.log('end');
+        // 截取TOP N数据并降序
+        const topCutWords = (Object.entries(cutWords).sort(([, a], [, b]) => a - b).slice(-commonSetting.maxKeywords)).reverse()
+        const sortRepeats = repeaters.sort( (a,b) => a.count > b.count ? 1 : -1 ).slice(-commonSetting.maxRepeaters).reverse()
 
         win.webContents.send('update-percent', 100)
-        win.webContents.send('report-finish')
+        // 发送完成的数据到渲染进程
+        win.webContents.send('qq-report-finish', {
+            groupName,
+            members,
+            chartData,
+            activePeriod,
+            topCutWords,
+            sortRepeats,
+            longestContent,
+            setting,
+            commonSetting
+        })
         win.setProgressBar(1.0, {mode: 'none'})
 
 
-        // console.log(TopCutWords)
+        // console.log(topCutWords)
         // console.log(members)
-        console.log("群名称", groupName)
+        // console.log("群名称", groupName)
+        // console.log(activePeriod)
+        // console.log(chartData)
+        // console.log(longestContent)
+        // console.log(sortRepeats)
     })
 }
 

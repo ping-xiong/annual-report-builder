@@ -31,7 +31,7 @@
                             <v-icon>mdi-home</v-icon>
                         </v-list-item-icon>
                         <v-list-item-content class="center-text">
-                            <v-list-item-title>首页</v-list-item-title>
+                            <v-list-item-title>年度报告管理</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
 
@@ -82,7 +82,14 @@
                 </v-list-item-group>
             </v-list>
 
-            <p class="version">版本: v1.0</p>
+            <div class="version d-flex flex-column mb-2">
+                <span>免费开源软件</span>
+                <span>如果您是购买得到的</span>
+                <span>请退款并差评</span>
+
+                <span class="mt-2">版本: v1.0</span>
+            </div>
+
         </v-navigation-drawer>
 
         <v-app-bar
@@ -90,7 +97,7 @@
             class="drag"
             flat
         >
-            <div style="width: 100%" v-if="percent > 0">
+            <div style="width: 100%" v-if="percent > 0 && showLoadingBar">
 <!--                <v-img-->
 <!--                    class="mr-3"-->
 <!--                    width="24"-->
@@ -154,11 +161,11 @@
         </v-app-bar>
 
         <v-main>
-            <div class="pa-3 fill-height">
-<!--                <keep-alive>-->
-<!--                    <router-view/>-->
-<!--                </keep-alive>-->
-                <router-view/>
+            <div class="pa-3 fill-height" style="background: #e6e6e6">
+                <keep-alive>
+                    <router-view/>
+                </keep-alive>
+<!--                <router-view/>-->
             </div>
         </v-main>
     </v-app>
@@ -179,8 +186,13 @@ export default {
         ipcRenderer.on('update-percent', (e, percent) => {
             this.$store.commit('updatePercent', percent)
         })
-        ipcRenderer.on('report-finish', () => {
+        ipcRenderer.on('qq-report-finish', (e, allData) => {
             this.$toast.success('报告生成完成')
+            this.$store.commit('InsertQQProject', allData)
+            this.$store.commit('updateQQPreviewData', allData)
+            this.$store.commit('hideLoadingBar')
+            // 前往预览界面
+            this.$router.replace('/qq/preview')
         })
     },
 
@@ -205,7 +217,7 @@ export default {
     },
 
     computed:{
-        ...mapState(['percent']),
+        ...mapState(['percent', 'showLoadingBar']),
         // 激活的菜单项
         selectedItem:{
             get(){

@@ -21,9 +21,17 @@ export default new Vuex.Store({
             extractNum: 2,
             // 排除的QQ号码
             excludeQQ: ['10000', '1000000'],
-            // 输出报告成品类型, web 网页， txt 纯文本, img 长图版
-            product: 'web'
-        }
+            // 提取TOP N个复读内容
+            maxRepeaters: 10
+        },
+        // QQ 历史项目列表
+        QQProject: [],
+        // QQ分析数据预览
+        QQPreviewData: null,
+        // 微信历史项目列表
+        WechatProject: [],
+        // 微信分析数据预览
+        WechatPreviewData: null
     },
     mutations: {
         updateSelectedItem(state, index){
@@ -55,13 +63,34 @@ export default new Vuex.Store({
         },
         updateSettingProduct(state, product){
             state.setting.product = product
+        },
+        InsertQQProject(state, project){
+            state.QQProject.push(project)
+        },
+        DelQQProject(state, index){
+            state.QQProject.splice(index, 1)
+        },
+        InsertWechatProject(state, project){
+            state.WechatProject.push(project)
+        },
+        DelWechatProject(state, index){
+            state.WechatProject.splice(index, 1)
+        },
+        updateSettingMaxRepeaters(state, num){
+            state.setting.maxRepeaters = num
+        },
+        updateQQPreviewData(state, data){
+            state.QQPreviewData = data
+        },
+        updateWechatPreviewData(state, data){
+            state.WechatPreviewData = data
         }
     },
     actions: {},
     modules: {},
     plugins: [
         createPersistedState({
-            paths: ['setting']
+            paths: ['setting', 'QQProject', 'WechatProject']
         })
     ],
 })

@@ -23,7 +23,7 @@
         </v-card>
         <v-card class="mb-2" outlined flat>
             <v-card-subtitle class="d-flex">
-                <span>第二步：生成设置</span>
+                <span>第二步：分析的聊天记录时间范围</span>
             </v-card-subtitle>
 
             <v-card-text class="d-flex flex-column">
@@ -110,10 +110,10 @@
             <v-card-subtitle class="d-flex">
                 <span>最后一步</span>
                 <v-spacer></v-spacer>
-                <a href="javascript:;" @click="toSetting">排除的QQ号数：{{excludeQQ.length}}</a>
+                <a href="javascript:;" @click="toSetting">已排除的QQ号数：{{excludeQQ.length}}，点击查看更多设置</a>
             </v-card-subtitle>
             <v-card-text class="d-flex flex-column">
-                <v-btn color="primary" @click="generateReport">立即生成报告</v-btn>
+                <v-btn :loading="showLoadingBar" color="primary" @click="generateReport">立即生成报告</v-btn>
             </v-card-text>
         </v-card>
     </div>
@@ -126,6 +126,8 @@ import 'vue2-datepicker/index.css'
 import 'vue2-datepicker/locale/zh-cn'
 
 const dayjs = require('dayjs')
+
+import { mapState } from "vuex"
 
 export default {
     name: "QQReport",
@@ -182,6 +184,7 @@ export default {
         }
     },
     computed:{
+        ...mapState(['showLoadingBar']),
         excludeQQ:{
             get(){
                 return this.$store.state.setting.excludeQQ

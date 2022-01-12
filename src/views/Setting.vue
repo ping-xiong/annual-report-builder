@@ -2,7 +2,7 @@
     <div>
         <v-card class="mb-2" flat outlined>
             <v-card-subtitle>
-                <span>分词设置</span>
+                <span>分词统计设置</span>
             </v-card-subtitle>
             <v-card-text>
                 <v-text-field
@@ -17,7 +17,7 @@
 
         <v-card class="mb-2" flat outlined>
             <v-card-subtitle>
-                <span>词云设置</span>
+                <span>词云统计设置</span>
             </v-card-subtitle>
             <v-card-text>
                 <v-text-field
@@ -49,29 +49,16 @@
 
         <v-card class="mb-2" flat outlined>
             <v-card-subtitle>
-                <span>年度报告成品设置</span>
+                <span>复读机统计设置</span>
             </v-card-subtitle>
             <v-card-text>
-                <v-radio-group
-                    v-model="product"
-                    row
-                    dense
+                <v-text-field
+                    v-model="maxRepeaters"
+                    label="显示复读次数前N名的信息"
+                    outlined
                     hide-details
-                    class="mt-0"
-                >
-                    <v-radio
-                        label="网页文件"
-                        value="web"
-                    ></v-radio>
-                    <v-radio
-                        label="长图版"
-                        value="img"
-                    ></v-radio>
-                    <v-radio
-                        label="纯文本"
-                        value="txt"
-                    ></v-radio>
-                </v-radio-group>
+                    dense
+                ></v-text-field>
             </v-card-text>
         </v-card>
     </div>
@@ -119,12 +106,12 @@ export default {
                 return this.$store.state.setting.excludeQQ.length
             }
         },
-        product:{
+        maxRepeaters:{
             get(){
-                return this.$store.state.setting.product
+                return this.$store.state.setting.maxRepeaters
             },
             set(value){
-                this.$store.commit('updateSettingProduct', value)
+                this.$store.commit('updateSettingMaxRepeaters', value)
             }
         }
     }

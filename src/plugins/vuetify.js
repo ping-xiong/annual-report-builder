@@ -8,4 +8,11 @@ Vue.use(Vuetify);
 Vue.component("v-snackbar", VSnackbar)
 Vue.component("v-icon", VIcon)
 
-export default new Vuetify({});
+import zhHans from 'vuetify/lib/locale/zh-Hans'
+
+export default new Vuetify({
+    lang:{
+        locales: {zhHans},
+        current: 'zhHans'
+    }
+});
