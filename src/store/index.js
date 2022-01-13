@@ -16,7 +16,7 @@ export default new Vuex.Store({
         // 通用设置
         setting: {
             // 提取TOP N个关键词
-            maxKeywords: 100,
+            maxKeywords: 150,
             // 每个句子提取的关键词数量
             extractNum: 2,
             // 排除的QQ号码

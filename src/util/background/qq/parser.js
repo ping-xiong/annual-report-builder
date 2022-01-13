@@ -2,7 +2,7 @@ import * as dayjs from 'dayjs'
 
 const parser = {}
 
-parser.parse = async function (path, lineCount, setting, win, commonSetting) {
+parser.parse = async function (path, lineCount, setting, win, commonSetting, logger) {
     // 显示进度条
     win.webContents.send('update-percent', 0)
     // 当前进度
@@ -38,8 +38,10 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting) {
     let dateReg = /\d{4}(\-|\/|.)\d{1,2}\1\d{1,2}/
     let timeReg = /(2[0-3]|[01]?[0-9]):([0-5]?[0-9]):([0-5]?[0-9])/
 
-    // 判断是否是日期时间的内容
-    let reg = /\d{4}(\-|\/|.)\d{1,2}\1\d{1,2}.*\)/;
+    let linkReg = /^((https|http|ftp|rtsp|mms)?:\/\/)[^\s]+/
+
+    // 判断是否是日期时间的内容，QQ号码有邮箱和数字格式，邮箱的括号为<>，数字的括号为()
+    let reg = /\d{4}(\-|\/|.)\d{1,2}\1\d{1,2}.*[\)>]/;
 
     // 过滤标点符号
     // let filterReg1 = /[\x21-\x2f\x3a-\x40\x5b-\x60\x7B-\x7F]/
@@ -52,9 +54,6 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting) {
     dayjs.extend(customParseFormat)
     const isBetween = require('dayjs/plugin/isBetween');
     dayjs.extend(isBetween)
-
-    // MD5计算库
-    const md5 = require('js-md5')
 
     // 利用数组自定义顺序，来判断消息是不是最晚，这里规定凌晨5点为最晚
     let latestTimeArr = [5, 4, 3, 2, 1, 0, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6]
@@ -132,18 +131,6 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting) {
         }
     }
 
-    // 日志记录器
-    const winston = require('winston');
-
-    const logger = winston.createLogger({
-        level: 'info',
-        format: winston.format.json(),
-        transports: [
-            new winston.transports.File({filename: 'error.log', level: 'error'})
-        ],
-    });
-
-
     // 有些消息是多行的，需要拼接
     let fullContent = ''
     let hasNext = false
@@ -208,7 +195,7 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting) {
                         dataWithoutPic = fullContent.replace('\r', '')
                             .replace('[图片]', '')
                             .replace('[表情]', '')
-                            .replace(/^((https|http|ftp|rtsp|mms)?:\/\/)[^\s]+/, '')
+                            .replace(linkReg, '')
                             .replace(/@.*?(?<=\s)/, '')
 
                         let result = nodejieba.extract(dataWithoutPic, parseInt(commonSetting.extractNum))
@@ -318,35 +305,17 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting) {
                             }
                         }
 
-                        // 判断最长的内容
-                        if (fullContent.length > longestContent.length){
+                        // 判断最长的内容，排除链接
+                        if ((fullContent.replace(linkReg, '')).length > longestContent.length){
                             longestContent = fullContent
                         }
 
                         // 记录复读次数，排除图片，因为不知道图片是否是同一张
                         if (lastFullContent === fullContent && lastFullContent.indexOf('[图片]') === -1){
-
                             repeatCount += 1
-
-                            // let fullContentMD5 = md5(fullContent)
-                            // let repeaterIndex = repeaters.findIndex( repeater => repeater.sign === fullContentMD5 )
-                            // if (repeaterIndex !== -1){
-                            //     // 更新
-                            //     repeaters[repeaterIndex].count += 1
-                            // }else{
-                            //     // 插入新的
-                            //     let newRepeater = JSON.parse(JSON.stringify(repeater))
-                            //     newRepeater.sign = fullContentMD5
-                            //     newRepeater.content = fullContent
-                            //     newRepeater.count = 1
-                            //
-                            //     repeaters.push(newRepeater)
-                            // }
                         }else{
                             if (repeatCount > 0){
                                 let newRepeater = JSON.parse(JSON.stringify(repeater))
-                                let fullContentMD5 = md5(fullContent)
-                                newRepeater.sign = fullContentMD5
                                 newRepeater.content = lastFullContent
                                 newRepeater.count = repeatCount
 
@@ -360,7 +329,7 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting) {
                     }
                 }
 
-
+                // 判断是否为时间行
                 if (reg.test(dataWithoutPic) && !hasNext) {
 
                     hasNext = true
@@ -393,8 +362,8 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting) {
 
                     // 提取QQ和昵称
                     let qqName = dataWithoutPic.replace(dateTimeReg, '')
-                    let nameReg = /[^\s].*(?=\()/
-                    let qqReg = /(?<=\().+(?=\))/
+                    let nameReg = /[^\s].*(?=[\(<])/
+                    let qqReg = /(?<=[\(<]).+(?=[\)>])/
 
                     let nameArr = nameReg.exec(qqName)
                     if (nameArr == null) {

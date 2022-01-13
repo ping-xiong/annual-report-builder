@@ -131,37 +131,47 @@
 
                 <v-divider></v-divider>
 
-                <div>
+                <div class="pb-4">
                     <v-card-subtitle>词云</v-card-subtitle>
-
+                    <div id="wordcloud" style="height: 400px" ref="wordcloud"></div>
                 </div>
 
                 <v-divider></v-divider>
 
                 <div>
-                    <v-card-subtitle>24小时活跃图</v-card-subtitle>
-
+                    <v-card-subtitle>24小时消息数</v-card-subtitle>
+                    <div ref="hoursLineChart" style="height: 400px"></div>
                 </div>
 
                 <v-divider></v-divider>
 
                 <div>
-                    <v-card-subtitle>每月/日消息数</v-card-subtitle>
-
+                    <v-card-subtitle>所有时间消息数</v-card-subtitle>
+                    <div ref="allTimeBarChart" style="height: 400px;"></div>
                 </div>
 
                 <v-divider></v-divider>
 
                 <div>
                     <v-card-subtitle>复读排行</v-card-subtitle>
-
+                    <v-data-table
+                        :headers="repeaterHeaders"
+                        :items="QQPreviewData.sortRepeats"
+                        :items-per-page="5"
+                    ></v-data-table>
                 </div>
 
                 <v-divider></v-divider>
 
                 <div>
                     <v-card-subtitle>最长消息内容</v-card-subtitle>
-
+                    <div class="pa-2">
+                        <v-textarea
+                            readonly
+                            outlined
+                            :value="QQPreviewData.longestContent"
+                        ></v-textarea>
+                    </div>
                 </div>
             </div>
         </v-card>
@@ -172,6 +182,13 @@
 
 import { mapState } from "vuex"
 import * as dayjs from 'dayjs'
+
+import * as echarts from 'echarts'
+
+import 'echarts-wordcloud'
+import getWordcloud from "@/util/chart/wordcloud"
+import getActiveHoursChart from "@/util/chart/activeHoursChart"
+import getAllTimeChart from "@/util/chart/allTimeChart"
 
 export default {
     name: "QQPreview",
@@ -189,10 +206,36 @@ export default {
             { text: '发图数', value: 'imgs' },
             { text: '活跃天数', value: 'actives' },
             { text: '总字数', value: 'words' },
+            { text: '复读机', value: 'repeats' },
+        ],
+        repeaterHeaders: [
+            {
+                text: '复读内容',
+                align: 'start',
+                sortable: false,
+                value: 'content',
+            },
+            { text: '复读次数', value: 'count' },
         ]
     }),
     mounted() {
-        console.log(this.QQPreviewData)
+        console.log("所有数据", this.QQPreviewData)
+
+        let wordcloud = echarts.init(this.$refs.wordcloud)
+        wordcloud.setOption(this.wordcloudData)
+
+        let activeHours = echarts.init(this.$refs.hoursLineChart)
+        activeHours.setOption(this.activeHoursData)
+
+        let allTime = echarts.init(this.$refs.allTimeBarChart)
+        allTime.setOption(this.getAllTimeData)
+
+        // 窗口发生变化，重新计算大小
+        window.onresize = function resize() {
+            wordcloud.resize()
+            activeHours.resize()
+            allTime.resize()
+        };
     },
     methods:{
         toHomepage(){
@@ -233,6 +276,15 @@ export default {
                     return '情侣年度报告'
             }
             return '年度报告'
+        },
+        wordcloudData(){
+            return getWordcloud(this.QQPreviewData)
+        },
+        activeHoursData(){
+            return getActiveHoursChart(this.QQPreviewData)
+        },
+        getAllTimeData(){
+            return getAllTimeChart(this.QQPreviewData)
         }
     }
 }

@@ -162,7 +162,7 @@
 
         <v-main>
             <div class="pa-3 fill-height" style="background: #e6e6e6">
-                <keep-alive>
+                <keep-alive exclude="QQPreview">
                     <router-view/>
                 </keep-alive>
 <!--                <router-view/>-->

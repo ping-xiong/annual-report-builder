@@ -94,6 +94,26 @@ if (isDevelopment) {
     }
 }
 
+// 日志记录器
+const winston = require('winston');
+
+const logger = winston.createLogger({
+    level: 'info',
+    format: winston.format.json(),
+    transports: [
+        new winston.transports.File({filename: 'error.log', level: 'error'})
+    ],
+});
+
+process.on('uncaughtException', error => {
+
+    logger.error(error.name)
+    logger.error(error.message)
+    logger.error(error.stack)
+
+    app.exit();
+});
+
 ipcMain.handle('open-url', async (event, url) => {
     shell.openExternal(url)
 })
@@ -129,7 +149,7 @@ ipcMain.handle('select-file', async (event) => {
 
 // 处理文件
 ipcMain.handle('qq-report', async (event, path, lineCount, setting, commonSetting) => {
-    parser.parse(path, lineCount, setting, win, commonSetting)
+    parser.parse(path, lineCount, setting, win, commonSetting, logger)
     console.log(path, lineCount, setting)
 })
 

@@ -12,6 +12,7 @@
                     <v-data-table
                         :headers="QQHeaders"
                         :items="QQProject"
+                        sort-desc
                         :items-per-page="5"
                     >
                         <template v-slot:item.setting.type="{ item }">
@@ -91,7 +92,7 @@
 import empty from "@/components/empty"
 import { mapState } from "vuex"
 
-import * as dayjs from 'dayjs'
+import {getSelectedTime} from "@/util/tool"
 
 export default {
     name: 'Home',
@@ -117,14 +118,7 @@ export default {
     },
     methods:{
         getTime(item){
-            switch (item.setting.type ) {
-                case 'year':
-                    return dayjs(item.setting.year).year() + '年'
-                case 'month':
-                    return dayjs(item.setting.month).format('YYYY-MM')
-                case 'ranger':
-                    return dayjs(item.setting.ranger[0]).format('MM-DD') + '至' + dayjs(item.setting.ranger[1]).format('MM-DD')
-            }
+            return getSelectedTime(item.setting)
         },
         previewQQProject(item){
             this.$store.commit('updateQQPreviewData', item)
