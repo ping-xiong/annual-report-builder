@@ -175,12 +175,27 @@
                 </div>
             </div>
         </v-card>
+
+        <v-expansion-panels class="mb-2" flat>
+            <v-expansion-panel>
+                <v-expansion-panel-header>
+                    原始产出数据
+                </v-expansion-panel-header>
+                <v-expansion-panel-content>
+                    <v-textarea
+                        readonly
+                        outlined
+                        :value="JSON.stringify(QQPreviewData, null, 4)"
+                    ></v-textarea>
+                </v-expansion-panel-content>
+            </v-expansion-panel>
+        </v-expansion-panels>
     </div>
 </template>
 
 <script>
 
-import { mapState } from "vuex"
+import {mapState} from "vuex"
 import * as dayjs from 'dayjs'
 
 import * as echarts from 'echarts'
@@ -201,12 +216,12 @@ export default {
                 sortable: false,
                 value: 'qq',
             },
-            { text: '昵称', sortable: false, value: 'name' },
-            { text: '消息数', value: 'msgs' },
-            { text: '发图数', value: 'imgs' },
-            { text: '活跃天数', value: 'actives' },
-            { text: '总字数', value: 'words' },
-            { text: '复读机', value: 'repeats' },
+            {text: '昵称', sortable: false, value: 'name'},
+            {text: '消息数', value: 'msgs'},
+            {text: '发图数', value: 'imgs'},
+            {text: '活跃天数', value: 'actives'},
+            {text: '总字数', value: 'words'},
+            {text: '复读机', value: 'repeats'},
         ],
         repeaterHeaders: [
             {
@@ -215,7 +230,7 @@ export default {
                 sortable: false,
                 value: 'content',
             },
-            { text: '复读次数', value: 'count' },
+            {text: '复读次数', value: 'count'},
         ]
     }),
     mounted() {
@@ -237,15 +252,15 @@ export default {
             allTime.resize()
         };
     },
-    methods:{
-        toHomepage(){
+    methods: {
+        toHomepage() {
             this.$router.replace('/')
             this.$store.commit('updateSelectedItem', 0)
         }
     },
-    computed:{
+    computed: {
         ...mapState(['QQPreviewData']),
-        timeType(){
+        timeType() {
             switch (this.QQPreviewData.setting.type) {
                 case 'year':
                     return {
@@ -263,10 +278,10 @@ export default {
                         time: dayjs(this.QQPreviewData.setting.ranger[0]).format('MM-DD') + '至' + dayjs(this.QQPreviewData.setting.ranger[1]).format('MM-DD')
                     }
                 default:
-                        return {}
+                    return {}
             }
         },
-        productType(){
+        productType() {
             switch (this.QQPreviewData.commonSetting.product) {
                 case 'group':
                     return '群聊年度报告'
@@ -277,13 +292,13 @@ export default {
             }
             return '年度报告'
         },
-        wordcloudData(){
+        wordcloudData() {
             return getWordcloud(this.QQPreviewData)
         },
-        activeHoursData(){
+        activeHoursData() {
             return getActiveHoursChart(this.QQPreviewData)
         },
-        getAllTimeData(){
+        getAllTimeData() {
             return getAllTimeChart(this.QQPreviewData)
         }
     }

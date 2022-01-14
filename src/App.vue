@@ -239,6 +239,22 @@ export default {
 .no-drag{
     -webkit-app-region: no-drag;
 }
+
+
+//滚动条样式
+textarea::-webkit-scrollbar{
+    width: 8px;
+    height: 5px;
+}
+textarea::-webkit-scrollbar-thumb{
+    border-radius: 1em;
+    background-color: rgba(50,50,50,.3);
+}
+textarea::-webkit-scrollbar-track{
+    border-radius: 1em;
+    background-color: rgba(50,50,50,.1);
+}
+
 </style>
 
 <style scoped lang="scss">
