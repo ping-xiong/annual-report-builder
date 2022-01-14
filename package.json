@@ -30,6 +30,7 @@
     "winston": "^3.3.4"
   },
   "devDependencies": {
+    "@mdi/font": "^6.5.95",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-plugin-router": "~4.5.0",
