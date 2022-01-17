@@ -84,7 +84,7 @@
                         row
                         dense
                         hide-details
-                        class="mt-0"
+                        class="mt-0 d-flex"
                     >
                         <v-radio
                             label="网页版"
@@ -101,13 +101,28 @@
                             disabled
                         ></v-radio>
                         <v-radio
-                            label="纯文本"
                             value="txt"
-                        ></v-radio>
+                        >
+                            <template v-slot:label>
+                                <span v-if="product !== 'txt'">纯文本</span>
+                                <v-select
+                                    v-else
+                                    dense
+                                    hide-details
+                                    style="width: 158px"
+                                    :items="getTextTemplates"
+                                    label="选择纯文本模板"
+                                    outlined
+                                    item-text="name"
+                                    item-value="content"
+                                    v-model="textTemplateSelectedContent"
+                                ></v-select>
+                            </template>
+                        </v-radio>
                     </v-radio-group>
                 </div>
                 <v-spacer></v-spacer>
-                <v-btn color="primary">导出</v-btn>
+                <v-btn color="primary" @click="exportProduct">导出</v-btn>
             </v-card-actions>
         </v-card>
 
@@ -205,6 +220,9 @@ import getWordcloud from "@/util/chart/wordcloud"
 import getActiveHoursChart from "@/util/chart/activeHoursChart"
 import getAllTimeChart from "@/util/chart/allTimeChart"
 
+import textConverter from "@/template/text/converter"
+import textTemplateList from "@/template/text/index"
+
 export default {
     name: "QQPreview",
     data: () => ({
@@ -231,7 +249,8 @@ export default {
                 value: 'content',
             },
             {text: '复读次数', value: 'count'},
-        ]
+        ],
+        textTemplateSelectedContent: ''
     }),
     mounted() {
         console.log("所有数据", this.QQPreviewData)
@@ -251,11 +270,20 @@ export default {
             activeHours.resize()
             allTime.resize()
         };
+
+        this.textTemplateSelectedContent = this.getTextTemplates[0].content
     },
     methods: {
         toHomepage() {
             this.$router.replace('/')
             this.$store.commit('updateSelectedItem', 0)
+        },
+        exportProduct(){
+            switch (this.product) {
+                case 'txt':
+                    console.log(textConverter(this.textTemplateSelectedContent, this.QQPreviewData))
+                    break
+            }
         }
     },
     computed: {
@@ -300,6 +328,9 @@ export default {
         },
         getAllTimeData() {
             return getAllTimeChart(this.QQPreviewData)
+        },
+        getTextTemplates(){
+            return textTemplateList
         }
     }
 }
