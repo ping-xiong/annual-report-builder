@@ -93,7 +93,6 @@
                         <v-radio
                             label="长图版"
                             value="img"
-                            disabled
                         ></v-radio>
                         <v-radio
                             label="视频版"
@@ -124,6 +123,26 @@
                 <v-spacer></v-spacer>
                 <v-btn color="primary" @click="exportProduct">导出</v-btn>
             </v-card-actions>
+        </v-card>
+
+        <v-card flat class="mb-2" v-if="outputText.length > 0">
+            <v-card-title class="d-flex">
+                <span>文本导出</span>
+            </v-card-title>
+
+            <v-card-text>
+                <v-textarea
+                    readonly
+                    outlined
+                    :value="outputText"
+                ></v-textarea>
+
+                <div class="d-flex">
+                    <v-spacer></v-spacer>
+                    <v-btn color="red" dark @click="copyText">一键复制</v-btn>
+                </div>
+            </v-card-text>
+
         </v-card>
 
         <v-card flat class="mb-2">
@@ -250,7 +269,9 @@ export default {
             },
             {text: '复读次数', value: 'count'},
         ],
-        textTemplateSelectedContent: ''
+        textTemplateSelectedContent: '',
+        // 导出的文字
+        outputText: ''
     }),
     mounted() {
         console.log("所有数据", this.QQPreviewData)
@@ -281,9 +302,14 @@ export default {
         exportProduct(){
             switch (this.product) {
                 case 'txt':
-                    console.log(textConverter(this.textTemplateSelectedContent, this.QQPreviewData))
+                    this.outputText = textConverter(this.textTemplateSelectedContent, this.QQPreviewData)
                     break
             }
+        },
+        copyText(){
+            const { ipcRenderer } = require('electron')
+            ipcRenderer.invoke('copy-text', this.outputText)
+            this.$toast.success('复制成功')
         }
     },
     computed: {

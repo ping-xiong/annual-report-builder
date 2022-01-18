@@ -1,6 +1,6 @@
 'use strict'
 
-import {app, protocol, BrowserWindow, ipcMain, shell, dialog} from 'electron'
+import {app, protocol, BrowserWindow, ipcMain, shell, dialog, clipboard } from 'electron'
 import {createProtocol} from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, {VUEJS_DEVTOOLS} from 'electron-devtools-installer'
 import * as path from "path"
@@ -156,4 +156,9 @@ ipcMain.handle('qq-report', async (event, path, lineCount, setting, commonSettin
 // 获取行数
 ipcMain.handle('count-line', async (event, path) => {
     return await parser.countLine(path)
+})
+
+// 一键复制文本
+ipcMain.handle('copy-text', async (event, txt) => {
+    clipboard.writeText(txt)
 })
