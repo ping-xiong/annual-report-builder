@@ -9,6 +9,13 @@ import parser from '@/util/background/qq/parser'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
+const fs = require('fs')
+
+const templatesPath =
+    process.env.NODE_ENV === 'development'
+        ? path.join(__dirname, '../templates')
+        : path.join(process.resourcesPath, 'templates');
+
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
     {scheme: 'app', privileges: {secure: true, standard: true}}
@@ -161,4 +168,9 @@ ipcMain.handle('count-line', async (event, path) => {
 // 一键复制文本
 ipcMain.handle('copy-text', async (event, txt) => {
     clipboard.writeText(txt)
+})
+
+// 读取txt文件
+ipcMain.handle('read-txt', async (event, txtPath) => {
+    return fs.readFileSync(path.join(templatesPath, txtPath), 'utf8')
 })

@@ -16,8 +16,15 @@ module.exports = {
         nsis:{
           oneClick: false,
           allowToChangeInstallationDirectory: true
-        }
-      },
+        },
+        extraResources: [
+          {
+            from: "./templates",
+            to: "./templates",
+            filter: ["**/*"]
+          }
+        ]
+      }
     }
   }
 }

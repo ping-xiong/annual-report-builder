@@ -113,8 +113,8 @@
                                     label="选择纯文本模板"
                                     outlined
                                     item-text="name"
-                                    item-value="content"
-                                    v-model="textTemplateSelectedContent"
+                                    item-value="path"
+                                    v-model="textTemplateSelectedPath"
                                 ></v-select>
                             </template>
                         </v-radio>
@@ -242,6 +242,8 @@ import getAllTimeChart from "@/util/chart/allTimeChart"
 import textConverter from "@/template/text/converter"
 import textTemplateList from "@/template/text/index"
 
+const { ipcRenderer } = require('electron')
+
 export default {
     name: "QQPreview",
     data: () => ({
@@ -269,7 +271,7 @@ export default {
             },
             {text: '复读次数', value: 'count'},
         ],
-        textTemplateSelectedContent: '',
+        textTemplateSelectedPath: '',
         // 导出的文字
         outputText: ''
     }),
@@ -292,7 +294,7 @@ export default {
             allTime.resize()
         };
 
-        this.textTemplateSelectedContent = this.getTextTemplates[0].content
+        this.textTemplateSelectedPath = this.getTextTemplates[0].path
     },
     methods: {
         toHomepage() {
@@ -302,12 +304,13 @@ export default {
         exportProduct(){
             switch (this.product) {
                 case 'txt':
-                    this.outputText = textConverter(this.textTemplateSelectedContent, this.QQPreviewData)
+                    ipcRenderer.invoke('read-txt', this.textTemplateSelectedPath).then( res => {
+                        this.outputText = textConverter(res, this.QQPreviewData)
+                    })
                     break
             }
         },
         copyText(){
-            const { ipcRenderer } = require('electron')
             ipcRenderer.invoke('copy-text', this.outputText)
             this.$toast.success('复制成功')
         }
