@@ -2,7 +2,7 @@
     <div>
         <v-card class="mb-2" outlined flat>
             <v-card-subtitle class="d-flex">
-                <span>第一步：选择聊天记录</span>
+                <span>第一步：选择聊天记录 <span @click="toHelp" class="link">点击查看导出聊天记录的方法</span> </span>
                 <v-spacer></v-spacer>
                 <span v-if="lineCount > 0">约{{lineCount}}行</span>
             </v-card-subtitle>
@@ -183,6 +183,10 @@ export default {
         toSetting(){
             this.$store.commit('updateSelectedItem', 3)
             this.$router.replace('/setting')
+        },
+        toHelp(){
+            this.$store.commit('updateSelectedItem', 4)
+            this.$router.replace('/help')
         }
     },
     computed:{
@@ -196,6 +200,10 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+    .link{
+        color: #0d47a1;
+        text-decoration: underline;
+        cursor: pointer;
+    }
 </style>

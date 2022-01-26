@@ -367,14 +367,15 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting, log
                     let nameReg = /[^\s].*(?=[\(<])/
                     let qqReg = /(?<=[\(<]).+(?=[\)>])/
 
+                    lastQQ = qqReg.exec(qqName)[0].toString()
+
                     let nameArr = nameReg.exec(qqName)
                     if (nameArr == null) {
-                        lastName = '空'
+                        // 如果导出的数据没有昵称，则使用QQ号代替
+                        lastName = lastQQ
                     } else {
                         lastName = nameArr[0]
                     }
-
-                    lastQQ = qqReg.exec(qqName)[0].toString()
 
                     // 排除QQ号，不进行统计
                     if (commonSetting.excludeQQ.indexOf(lastQQ) !== -1) {
