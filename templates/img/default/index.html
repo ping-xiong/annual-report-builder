@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts-wordcloud@2.1.0-beta/dist/echarts-wordcloud.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode.vue@1.7.0/dist/qrcode.vue.min.js"></script>
+    <script src="js/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="./css/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+
+    <title>报告</title>
+</head>
+<body>
+
+<div id="app">
+    <div>
+        <div>
+            <div class="page-1 page">
+                <h3 class="margin-0 text-color sub-title">{{viewData.date}}</h3>
+                <h1 class="margin-0 text-color title">{{viewData.name}}</h1>
+                <h3 class="margin-0 text-color sub-title">{{viewData.title}}</h3>
+
+            </div>
+            <div class="page-2 page">
+
+                <div class="pd-box index999">
+                    <p class="text-color">在这一年里，我们活跃人数为<span class="text-highlight">{{ viewData.memberCount }}</span>，总共发了<span class="text-highlight">{{viewData.totalMsg}}</span>条消息，</p>
+                    <p class="text-color">总<span class="text-highlight">{{ viewData.totalWords }}</span>字，相当于<span class="text-highlight">{{ viewData.bookCount }}</span>本《西游记》，</p>
+                    <p class="text-color">我们共发了<span class="text-highlight">{{ viewData.totalImg  }}</span>张图片，可以整理成一本回忆满满的相册吧！</p>
+                </div>
+
+            </div>
+            <div class="page-3 page">
+
+                <div class="index999">
+                    <div id="wordcloud" ref="wordcloud" :style="sizeForChart"></div>
+                </div>
+
+            </div>
+
+            <div class="page-4 page">
+
+                <div class="pd-box index999">
+                    <p>还记得当年我们一起复读过的内容吗？</p>
+                    <p class="text-color text-highlight">"{{ viewData.topRepeat }}"</p>
+                    <p class="text-color">一共复读了 <span class="text-highlight">{{ viewData.topRepeatCount }}</span> 次。</p>
+                </div>
+
+            </div>
+
+            <div class="page-5 page">
+
+                <div class="pd-box index999">
+                    <p class="text-color"><span class="text-highlight">@{{ viewData.longestContentName }}</span>说：</p>
+                    <p class="text-color">"{{ viewData.longestContent }}"</p>
+                    <p class="text-color">这一年，这条最长的消息还有印象吗？</p>
+                </div>
+
+            </div>
+
+            <div class="page-6 page">
+
+                <div class="index999">
+                    <div class="pd-box">
+                        <p class="text-color"><span class="text-highlight">{{ viewData.activeDate }}</span> 是我们的最活跃的时间</p>
+                        <p class="text-color">一共发了<span class="text-highlight">{{ viewData.activeDateData }}</span>条消息。</p>
+                    </div>
+                    <div id="barChar" ref="barChar" :style="sizeForBarChart"></div>
+                </div>
+
+            </div>
+
+            <div class="page-7 page">
+                <div class="index999">
+                    <div class="pd-box">
+                        <p class="text-color">在一天中，我们喜欢在<span class="text-highlight">{{ viewData.activePeriod }}</span>聊天</p>
+                        <p class="text-color">那个时候的讨论一定很激烈吧！</p>
+                    </div>
+                    <div id="lineChar" ref="lineChar" :style="sizeForBarChart"></div>
+                </div>
+
+            </div>
+
+            <div class="page-8 page">
+                <div class="final">
+
+                    <p class="text-color text-highlight center-text">{{ viewData.name }}</p>
+                    <p class="text-color center-text" >总结</p>
+
+                    <div class="line"></div>
+
+                    <p class="final-title"># 被提到了<span class="red">{{ viewData.topKeywordCount }}</span>次的关键词</p>
+                    <p class="final-text" >{{ viewData.topKeyword }}</p>
+                    <div class="line"></div>
+
+                    <p class="final-title"># 发了<span class="red">{{ viewData.maxWords }}</span>条消息的话痨</p>
+                    <p class="final-text">@{{ viewData.maxWordName }}</p>
+                    <div class="line"></div>
+
+                    <p class="final-title"># 复读了<span class="red">{{ viewData.maxRepeat }}</span>次的复读机</p>
+                    <p class="final-text">@{{ viewData.maxRepeatName }}</p>
+                    <div class="line"></div>
+
+                    <p class="final-title"># 发了<span class="red">{{ viewData.maxImg }}</span>张图的斗图王</p>
+                    <p class="final-text">@{{ viewData.maxImgName }}</p>
+                    <div class="line"></div>
+
+                    <p class="final-title"># 活跃了<span class="red">{{ viewData.maxActive }}</span>天</p>
+                    <p class="final-text">@{{ viewData.maxActiveName }}</p>
+
+                </div>
+
+                <p class="center-text white">此报告由[年度报告生成器]生成</p>
+                <qrcode-vue :value="url" :size="urlSize" level="H" style="margin-bottom: 30px" />
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="./js/index.js"></script>
+</body>
+</html>

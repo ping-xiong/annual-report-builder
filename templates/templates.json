@@ -18,7 +18,9 @@
         {
             "name": "默认风格",
             "type": "group",
-            "path": "./web/default/index.html"
+            "path": "./img/default",
+            "main": "/js/index.js",
+            "html": "index.html"
         }
     ],
     "video": [

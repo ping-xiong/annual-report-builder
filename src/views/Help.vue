@@ -62,6 +62,14 @@
                     <p>2. 在 <b>web</b> 目录下，新建一个文件夹，里面存放您的模板。</p>
                     <p>如果您的模板不是以 <b>js</b> 目录下的 <b>index.js</b> 为替换数据的文件，在编辑 <b>templates.json</b> 时，将 <b>main</b> 字段修改为您想自动替换数据的文件路径。</p>
                     <p>3. 编辑 <b>templates</b> 文件夹下的 <b>templates.json</b> 文件， 加入您的网页模板。</p>
+
+                    <h4 class="mb-1">图片模板</h4>
+                    <h5>修改图片模板</h5>
+                    <p>1. 图片模板原理：采用截图网页的方法，所以修改同【修改网页模板】。</p>
+
+                    <h5>添加图片模板</h5>
+                    <p>1. 同添加网页模板，不同的是要执行截图操作。</p>
+                    <p>2. 当网页渲染完成，执行截图操作，并下载图片。</p>
                 </v-expansion-panel-content>
             </v-expansion-panel>
 
@@ -81,6 +89,9 @@
 
                     <h5>main</h5>
                     <p>网页模板的自动替换数据的文件路径。也是相对路径。</p>
+
+                    <h5>html</h5>
+                    <p>图片模板的网页文件路径和名称</p>
                 </v-expansion-panel-content>
             </v-expansion-panel>
 
