@@ -82,10 +82,10 @@ export default function (path, data, selectedPath, allWebTemplates, chartData){
         webData['{{viewData}}'] = viewData
 
         ipcRenderer.invoke('copy-dir', selectedPath, path).then( res => {
-            console.log(res)
             if (res){
                 // 修改目录的index文件
                 ipcRenderer.invoke('replace-str', (res + template.main), JSON.parse(JSON.stringify(webData))).then( res2 => {
+                    ipcRenderer.invoke('open-dir', res)
                     resolve(res2)
                 }).catch( e => {
                     alert(e.toString())

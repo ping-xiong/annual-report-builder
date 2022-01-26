@@ -67,6 +67,7 @@
                 <span>模板列表</span>
             </v-card-subtitle>
             <v-card-text>
+                <span>在软件运行时，添加了模板，除了重启软件载入新模板，还可以点击下面按钮载入新模板</span>
                 <v-btn color="success" @click="reloadConfig">重新载入模板列表</v-btn>
             </v-card-text>
         </v-card>

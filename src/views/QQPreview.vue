@@ -341,8 +341,6 @@ export default {
                                 getAllTimeData: this.getAllTimeData
                             }).then( () => {
                                 this.$toast.success('导出成功')
-                                // 打开对应文件夹
-
                             })
                         }
                     })

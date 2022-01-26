@@ -13,5 +13,15 @@
             "type": "group",
             "path": "./text/style1.txt"
         }
+    ],
+    "img": [
+        {
+            "name": "默认风格",
+            "type": "group",
+            "path": "./web/default/index.html"
+        }
+    ],
+    "video": [
+
     ]
 }

@@ -86,12 +86,14 @@
                         value="group"
                     ></v-radio>
                     <v-radio
-                        label="个人年度报告"
+                        label="个人年度报告(开发中)"
                         value="person"
+                        disabled
                     ></v-radio>
                     <v-radio
-                        label="情侣年度报告"
+                        label="情侣年度报告(开发中)"
                         value="love"
+                        disabled
                     ></v-radio>
                 </v-radio-group>
                 <div v-if="setting.report === 'person'" class="mt-2">

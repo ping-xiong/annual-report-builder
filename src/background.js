@@ -219,3 +219,8 @@ ipcMain.handle('replace-str', async (event, targetPath, data) => {
         throw e
     }
 })
+
+// 打开目录
+ipcMain.handle('open-dir', async (event, path) => {
+    shell.showItemInFolder(path)
+})
