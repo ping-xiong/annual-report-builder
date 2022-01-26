@@ -31,7 +31,9 @@ export default new Vuex.Store({
         // 微信历史项目列表
         WechatProject: [],
         // 微信分析数据预览
-        WechatPreviewData: null
+        WechatPreviewData: null,
+        // 模板列表
+        TemplatesConfig: {}
     },
     mutations: {
         updateSelectedItem(state, index){
@@ -84,6 +86,9 @@ export default new Vuex.Store({
         },
         updateWechatPreviewData(state, data){
             state.WechatPreviewData = data
+        },
+        updateTemplatesConfig(state, config){
+            state.TemplatesConfig = JSON.parse(config)
         }
     },
     actions: {},

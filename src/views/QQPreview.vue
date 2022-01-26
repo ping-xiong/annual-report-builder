@@ -88,8 +88,23 @@
                     >
                         <v-radio
                             label="网页版"
-                            value="web"
-                        ></v-radio>
+                            value="web">
+                            <template v-slot:label>
+                                <span v-if="product !== 'web'">网页版</span>
+                                <v-select
+                                    v-else
+                                    dense
+                                    hide-details
+                                    style="width: 158px"
+                                    :items="getWebTemplates"
+                                    label="选择网页模板"
+                                    outlined
+                                    item-text="name"
+                                    item-value="path"
+                                    v-model="webTemplateSelectedPath"
+                                ></v-select>
+                            </template>
+                        </v-radio>
                         <v-radio
                             label="长图版"
                             value="img"
@@ -230,7 +245,6 @@
 <script>
 
 import {mapState} from "vuex"
-import * as dayjs from 'dayjs'
 
 import * as echarts from 'echarts'
 
@@ -240,9 +254,11 @@ import getActiveHoursChart from "@/util/chart/activeHoursChart"
 import getAllTimeChart from "@/util/chart/allTimeChart"
 
 import textConverter from "@/template/text/converter"
-import textTemplateList from "@/template/text/index"
+import webConverter from '@/template/web/converter'
 
 const { ipcRenderer } = require('electron')
+
+import {getSelectedTimeDetail} from "@/util/tool"
 
 export default {
     name: "QQPreview",
@@ -273,7 +289,9 @@ export default {
         ],
         textTemplateSelectedPath: '',
         // 导出的文字
-        outputText: ''
+        outputText: '',
+        // 选择的网页模板
+        webTemplateSelectedPath: ''
     }),
     mounted() {
         console.log("所有数据", this.QQPreviewData)
@@ -287,14 +305,19 @@ export default {
         let allTime = echarts.init(this.$refs.allTimeBarChart)
         allTime.setOption(this.getAllTimeData)
 
-        // 窗口发生变化，重新计算大小
+        // 窗口发生变化，重新渲染
         window.onresize = function resize() {
             wordcloud.resize()
             activeHours.resize()
             allTime.resize()
         };
 
-        this.textTemplateSelectedPath = this.getTextTemplates[0].path
+        if (this.getTextTemplates.length > 0){
+            this.textTemplateSelectedPath = this.getTextTemplates[0].path
+        }
+        if (this.getWebTemplates.length > 0){
+            this.webTemplateSelectedPath = this.getWebTemplates[0].path
+        }
     },
     methods: {
         toHomepage() {
@@ -308,6 +331,22 @@ export default {
                         this.outputText = textConverter(res, this.QQPreviewData)
                     })
                     break
+                case 'web':
+                    ipcRenderer.invoke('select-dir').then( res => {
+                        if (res){
+                            // 导出
+                            webConverter(res[0], this.QQPreviewData, this.webTemplateSelectedPath,this.getWebTemplates, {
+                                wordcloudData: this.wordcloudData,
+                                activeHoursData: this.activeHoursData,
+                                getAllTimeData: this.getAllTimeData
+                            }).then( () => {
+                                this.$toast.success('导出成功')
+                                // 打开对应文件夹
+
+                            })
+                        }
+                    })
+                    break
             }
         },
         copyText(){
@@ -316,27 +355,9 @@ export default {
         }
     },
     computed: {
-        ...mapState(['QQPreviewData']),
+        ...mapState(['QQPreviewData', 'TemplatesConfig']),
         timeType() {
-            switch (this.QQPreviewData.setting.type) {
-                case 'year':
-                    return {
-                        name: '年度',
-                        time: dayjs(this.QQPreviewData.setting.year).year() + '年'
-                    }
-                case 'month':
-                    return {
-                        name: '月度',
-                        time: dayjs(this.QQPreviewData.setting.month).format('YYYY-MM')
-                    }
-                case 'ranger':
-                    return {
-                        name: '自定义范围',
-                        time: dayjs(this.QQPreviewData.setting.ranger[0]).format('MM-DD') + '至' + dayjs(this.QQPreviewData.setting.ranger[1]).format('MM-DD')
-                    }
-                default:
-                    return {}
-            }
+            return getSelectedTimeDetail(this.QQPreviewData.setting)
         },
         productType() {
             switch (this.QQPreviewData.commonSetting.product) {
@@ -359,7 +380,10 @@ export default {
             return getAllTimeChart(this.QQPreviewData)
         },
         getTextTemplates(){
-            return textTemplateList
+            return this.TemplatesConfig.text
+        },
+        getWebTemplates(){
+            return this.TemplatesConfig.web
         }
     }
 }

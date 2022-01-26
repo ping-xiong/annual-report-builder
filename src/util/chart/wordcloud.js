@@ -15,7 +15,11 @@ export default function getWordcloud (QQPreviewData) {
 
     return {
         title:{
-            text: QQPreviewData.groupName + '-' + time + '高频关键词'
+            text: QQPreviewData.groupName + '-' + time + '高频关键词',
+            textStyle:{
+                textBorderColor: '#fff',
+                textBorderWidth: 2
+            }
         },
         toolbox: {
             feature: {

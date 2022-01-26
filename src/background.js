@@ -154,10 +154,17 @@ ipcMain.handle('select-file', async (event) => {
     })
 })
 
+// 目录选择器
+ipcMain.handle('select-dir', async (event) => {
+    return dialog.showOpenDialogSync({
+        properties: ['openDirectory', 'promptToCreate', 'createDirectory']
+    })
+})
+
 // 处理文件
 ipcMain.handle('qq-report', async (event, path, lineCount, setting, commonSetting) => {
     parser.parse(path, lineCount, setting, win, commonSetting, logger)
-    console.log(path, lineCount, setting)
+    // console.log(path, lineCount, setting)
 })
 
 // 获取行数
@@ -173,4 +180,42 @@ ipcMain.handle('copy-text', async (event, txt) => {
 // 读取txt文件
 ipcMain.handle('read-txt', async (event, txtPath) => {
     return fs.readFileSync(path.join(templatesPath, txtPath), 'utf8')
+})
+
+// 读取模板配置文件
+ipcMain.handle('read-config', async () => {
+    return fs.readFileSync(path.join(templatesPath, './templates.json'), 'utf8')
+})
+
+// 复制文件夹
+ipcMain.handle('copy-dir', async (event, fromPath, toPath) => {
+    const copyDir = require('copy-dir')
+
+    const finalPath = toPath + '\\导出文件\\'
+
+    copyDir.sync(path.join(templatesPath, fromPath).toString(), path.normalize(finalPath), {
+        utimes: true,  // keep add time and modify time
+        mode: true,    // keep file mode
+        cover: true    // cover file when exists, default is true
+    })
+
+    return finalPath
+
+})
+
+// 替换某个文件的字符串
+ipcMain.handle('replace-str', async (event, targetPath, data) => {
+    try {
+        targetPath = path.normalize(targetPath)
+        let fileData = fs.readFileSync(targetPath, 'utf8');
+
+        for (const dataKey in data) {
+            fileData = fileData.replace('"' + dataKey + '"', JSON.stringify(data[dataKey]))
+        }
+
+        // 重新写入文件
+        fs.writeFileSync(targetPath, fileData)
+    }catch (e) {
+        throw e
+    }
 })

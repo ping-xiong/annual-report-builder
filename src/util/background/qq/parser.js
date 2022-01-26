@@ -87,6 +87,7 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting, log
         count: 0 // 复读次数
     } // 复读机具体
     let longestContent = '' // 最长的内容
+    let longestContentName = '' // 说该最长的内容的昵称
 
     // 初始化24小时活跃时间表
     for (let i = 0; i < 24; i++) {
@@ -308,6 +309,7 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting, log
                         // 判断最长的内容，排除链接
                         if ((fullContent.replace(linkReg, '')).length > longestContent.length){
                             longestContent = fullContent
+                            longestContentName = lastName2
                         }
 
                         // 记录复读次数，排除图片，因为不知道图片是否是同一张
@@ -419,6 +421,7 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting, log
             topCutWords,
             sortRepeats,
             longestContent,
+            longestContentName,
             setting,
             commonSetting
         })

@@ -61,10 +61,21 @@
                 ></v-text-field>
             </v-card-text>
         </v-card>
+
+        <v-card class="mb-2" flat outlined>
+            <v-card-subtitle>
+                <span>模板列表</span>
+            </v-card-subtitle>
+            <v-card-text>
+                <v-btn color="success" @click="reloadConfig">重新载入模板列表</v-btn>
+            </v-card-text>
+        </v-card>
     </div>
 </template>
 
 <script>
+import {ipcRenderer} from "electron"
+
 export default {
     name: "Setting",
     data: () => ({
@@ -74,7 +85,12 @@ export default {
 
     },
     methods:{
-
+        reloadConfig(){
+            ipcRenderer.invoke('read-config').then( res => {
+                this.$store.commit('updateTemplatesConfig', res)
+                this.$toast.success('加载成功！')
+            })
+        }
     },
     computed: {
         maxKeywords: {

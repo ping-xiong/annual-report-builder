@@ -194,6 +194,12 @@ export default {
             // 前往预览界面
             this.$router.replace('/qq/preview')
         })
+
+        // 读取配置文件
+        ipcRenderer.invoke('read-config').then( res => {
+            this.$store.commit('updateTemplatesConfig', res)
+        })
+
     },
 
     methods:{

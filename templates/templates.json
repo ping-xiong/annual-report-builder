@@ -1,0 +1,17 @@
+{
+    "web": [
+        {
+            "name": "默认风格",
+            "type": "group",
+            "path": "./web/default",
+            "main": "/js/index.js"
+        }
+    ],
+    "text": [
+        {
+            "name": "默认风格",
+            "type": "group",
+            "path": "./text/style1.txt"
+        }
+    ]
+}

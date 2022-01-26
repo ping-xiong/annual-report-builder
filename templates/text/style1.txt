@@ -14,6 +14,7 @@
 一共复读了{{topRepeatContentCount}}次。
 =============================
 
+@{{topLengthContentName}}说:
 "{{topLengthContent}}"
 
 这一年，这条最长的消息还有印象吗？
@@ -23,9 +24,9 @@
 =============================
 【总结】
 # 关键词：{{topKeyword}}
-# 话痨：@{{topTalkativeMember}}
-# 复读机：@{{topRepeater}}
-# 斗图王： @{{topImgMember}}
-# 住在群里： @{{topActiveDayMember}}
+# 话痨：@{{topTalkativeMember}} (总字数: {{topTalkativeCount}})
+# 复读机：@{{topRepeater}} (复读数：{{topRepeaterCount}})
+# 斗图王： @{{topImgMember}} (发图数：{{topImgCount}})
+# 住在群里： @{{topActiveDayMember}} (活跃天数：{{topActiveDayCount}})
 =============================
 此报告由[年度报告生成器]生成
