@@ -10,7 +10,7 @@
             <v-card-text class="d-flex align-center">
                 <v-text-field
                     v-model="path"
-                    label="文件路径"
+                    label="点击右侧按钮选择导出的txt格式消息记录文件"
                     outlined
                     dense
                     readonly
