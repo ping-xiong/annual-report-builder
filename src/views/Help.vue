@@ -124,7 +124,7 @@
 
             <v-expansion-panel>
                 <v-expansion-panel-header>
-                    点击开始分析软件闪退怎么解决？
+                    点击生成报告按钮，软件闪退怎么解决？
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
                     软件安装路径不能有中文，请重新安装到非中文路径的文件夹下。

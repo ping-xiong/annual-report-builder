@@ -53,7 +53,7 @@
                 <img src="./imgs/page2top.svg" class="bottom-img" alt="">
             </div>
 
-            <div class="page-4 page">
+            <div class="page-4 page" v-if="viewData.topRepeat.length > 0">
                 <img src="./imgs/page2.svg" class="top-img rotate180" alt="">
 
                 <div class="pd-box index999">
@@ -124,9 +124,9 @@
                     <p class="final-text" v-animate="{value: 'slideInRight'}">@{{ viewData.maxWordName }}</p>
                     <div class="line"></div>
 
-                    <p class="final-title" v-animate="{value: 'slideInLeft'}"># 复读了<span class="red">{{ viewData.maxRepeat }}</span>次的复读机</p>
-                    <p class="final-text" v-animate="{value: 'slideInLeft'}">@{{ viewData.maxRepeatName }}</p>
-                    <div class="line"></div>
+                    <p class="final-title" v-animate="{value: 'slideInLeft'}" v-if="viewData.maxRepeat > 0"># 复读了<span class="red">{{ viewData.maxRepeat }}</span>次的复读机</p>
+                    <p class="final-text" v-animate="{value: 'slideInLeft'}" v-if="viewData.maxRepeat > 0">@{{ viewData.maxRepeatName }}</p>
+                    <div class="line" v-if="viewData.maxRepeat > 0"></div>
 
                     <p class="final-title" v-animate="{value: 'slideInRight'}"># 发了<span class="red">{{ viewData.maxImg }}</span>张图的斗图王</p>
                     <p class="final-text" v-animate="{value: 'slideInRight'}">@{{ viewData.maxImgName }}</p>

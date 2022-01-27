@@ -76,8 +76,10 @@ export function getData(data, chartData) {
     viewData.maxRepeat = topData.maxRepeat
     viewData.maxRepeatName = topData.maxRepeatName
 
-    viewData.topRepeat = data.sortRepeats[0].content.trim()
-    viewData.topRepeatCount = data.sortRepeats[0].count
+    if (data.sortRepeats.length > 0){
+        viewData.topRepeat = data.sortRepeats[0].content.trim()
+        viewData.topRepeatCount = data.sortRepeats[0].count
+    }
 
     viewData.maxImg = topData.maxImg
     viewData.maxImgName = topData.maxImgName

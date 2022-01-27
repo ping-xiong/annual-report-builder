@@ -71,6 +71,15 @@
                 <v-btn color="success" @click="reloadConfig">重新载入模板列表</v-btn>
             </v-card-text>
         </v-card>
+
+        <v-card class="mb-2" flat outlined>
+            <v-card-subtitle>
+                <span>调试模式</span>
+            </v-card-subtitle>
+            <v-card-text>
+                <v-btn color="red" dark @click="openDevTool">打开控制台</v-btn>
+            </v-card-text>
+        </v-card>
     </div>
 </template>
 
@@ -91,6 +100,9 @@ export default {
                 this.$store.commit('updateTemplatesConfig', res)
                 this.$toast.success('加载成功！')
             })
+        },
+        openDevTool(){
+            ipcRenderer.invoke('open-dev-tool')
         }
     },
     computed: {
