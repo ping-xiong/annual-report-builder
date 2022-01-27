@@ -121,7 +121,7 @@ p, h1, h2, h3, h4, h5{
 
 .final{
     height: 80vh;
-    width: 90vw;
+    width: 90%;
     background: #ffffffed;
     border-radius: 8px;
     box-shadow: 0 0 8px #858585;

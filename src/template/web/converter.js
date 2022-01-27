@@ -1,4 +1,4 @@
-import {ipcRenderer} from "electron";
+import {ipcRenderer} from "electron"
 import viewData from "@/template/viewData"
 import {
     getBookCount,
@@ -12,9 +12,9 @@ import {
  * 导出为web
  * @param path 模板路径
  * @param data 模板数据
- * @param selectedPath
- * @param allWebTemplates
- * @param chartData
+ * @param selectedPath 下拉选择的模板路径
+ * @param allWebTemplates 模板列表
+ * @param chartData 图表数据
  */
 export default function (path, data, selectedPath, allWebTemplates, chartData){
 
@@ -26,60 +26,7 @@ export default function (path, data, selectedPath, allWebTemplates, chartData){
             }
         }
 
-        let webData = {}
-
-        // 组装网页模板数据
-        webData['{{wordcloudOption}}'] = chartData.wordcloudData
-        webData['{{lineChartOption}}'] = chartData.activeHoursData
-        webData['{{barChartOption}}'] = chartData.getAllTimeData
-
-
-        viewData.title = getSelectedTimeDetail(data.setting).name + "报告"
-        if (data.setting.type === 'ranger'){
-            viewData.title = '报告'
-        }
-
-        viewData.name = data.groupName
-        viewData.memberCount = data.members.length
-
-
-        let topData = getTopData(data.members)
-        viewData.totalMsg = topData.totalMsg
-        viewData.totalWords = topData.totalWords
-        viewData.totalImg = topData.totalImg
-        viewData.bookCount = getBookCount(topData.totalWords)
-
-        viewData.maxWords = topData.maxWords
-        viewData.maxWordName = topData.maxWordName
-
-        viewData.maxRepeat = topData.maxRepeat
-        viewData.maxRepeatName = topData.maxRepeatName
-
-        viewData.topRepeat = data.sortRepeats[0].content.trim()
-        viewData.topRepeatCount = data.sortRepeats[0].count
-
-        viewData.maxImg = topData.maxImg
-        viewData.maxImgName = topData.maxImgName
-
-        viewData.maxActive = topData.maxActive
-        viewData.maxActiveName = topData.maxActiveName
-
-        viewData.longestContent = data.longestContent
-        viewData.longestContentName = data.longestContentName
-
-        viewData.topKeyword = data.topCutWords[0][0]
-        viewData.topKeywordCount = data.topCutWords[0][1]
-
-
-        let activeDateResult = getTopActiveDate(data.chartData, data.setting)
-        viewData.activeDate = activeDateResult.activeDate
-        viewData.activeDateData = activeDateResult.activeDateData
-
-        let activePeriodResult = getTopActiveTime(data.activePeriod)
-        viewData.activePeriod = activePeriodResult.activePeriod
-
-
-        webData['{{viewData}}'] = viewData
+        let webData = getData(data, chartData)
 
         ipcRenderer.invoke('copy-dir', selectedPath, path).then( res => {
             if (res){
@@ -97,4 +44,63 @@ export default function (path, data, selectedPath, allWebTemplates, chartData){
             alert(e.toString())
         })
     });
+}
+
+export function getData(data, chartData) {
+    let webData = {}
+
+    // 组装网页模板数据
+    webData['{{wordcloudOption}}'] = chartData.wordcloudData
+    webData['{{lineChartOption}}'] = chartData.activeHoursData
+    webData['{{barChartOption}}'] = chartData.getAllTimeData
+
+
+    viewData.title = getSelectedTimeDetail(data.setting).name + "报告"
+    if (data.setting.type === 'ranger'){
+        viewData.title = '报告'
+    }
+
+    viewData.name = data.groupName
+    viewData.memberCount = data.members.length
+
+
+    let topData = getTopData(data.members)
+    viewData.totalMsg = topData.totalMsg
+    viewData.totalWords = topData.totalWords
+    viewData.totalImg = topData.totalImg
+    viewData.bookCount = getBookCount(topData.totalWords)
+
+    viewData.maxWords = topData.maxWords
+    viewData.maxWordName = topData.maxWordName
+
+    viewData.maxRepeat = topData.maxRepeat
+    viewData.maxRepeatName = topData.maxRepeatName
+
+    viewData.topRepeat = data.sortRepeats[0].content.trim()
+    viewData.topRepeatCount = data.sortRepeats[0].count
+
+    viewData.maxImg = topData.maxImg
+    viewData.maxImgName = topData.maxImgName
+
+    viewData.maxActive = topData.maxActive
+    viewData.maxActiveName = topData.maxActiveName
+
+    viewData.longestContent = data.longestContent
+    viewData.longestContentName = data.longestContentName
+
+    viewData.topKeyword = data.topCutWords[0][0]
+    viewData.topKeywordCount = data.topCutWords[0][1]
+
+
+    let activeDateResult = getTopActiveDate(data.chartData, data.setting)
+    viewData.activeDate = activeDateResult.activeDate
+    viewData.activeDateData = activeDateResult.activeDateData
+
+    let activePeriodResult = getTopActiveTime(data.activePeriod)
+    viewData.activePeriod = activePeriodResult.activePeriod
+
+
+    webData['{{viewData}}'] = viewData
+
+    return webData
 }

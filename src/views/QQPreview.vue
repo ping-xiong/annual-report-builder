@@ -108,7 +108,23 @@
                         <v-radio
                             label="长图版"
                             value="img"
-                        ></v-radio>
+                        >
+                            <template v-slot:label>
+                                <span v-if="product !== 'img'">长图版</span>
+                                <v-select
+                                    v-else
+                                    dense
+                                    hide-details
+                                    style="width: 158px"
+                                    :items="getImgTemplates"
+                                    label="选择长图模板"
+                                    outlined
+                                    item-text="name"
+                                    item-value="path"
+                                    v-model="imgTemplateSelectedPath"
+                                ></v-select>
+                            </template>
+                        </v-radio>
                         <v-radio
                             label="视频版"
                             value="video"
@@ -255,6 +271,7 @@ import getAllTimeChart from "@/util/chart/allTimeChart"
 
 import textConverter from "@/template/text/converter"
 import webConverter from '@/template/web/converter'
+import imgConverter from '@/template/image/converter'
 
 const { ipcRenderer } = require('electron')
 
@@ -291,7 +308,9 @@ export default {
         // 导出的文字
         outputText: '',
         // 选择的网页模板
-        webTemplateSelectedPath: ''
+        webTemplateSelectedPath: '',
+        // 选择的图片模板
+        imgTemplateSelectedPath: ''
     }),
     mounted() {
         console.log("所有数据", this.QQPreviewData)
@@ -345,6 +364,16 @@ export default {
                         }
                     })
                     break
+                case 'img':
+                    imgConverter(this.QQPreviewData, this.imgTemplateSelectedPath,this.getImgTemplates, {
+                        wordcloudData: this.wordcloudData,
+                        activeHoursData: this.activeHoursData,
+                        getAllTimeData: this.getAllTimeData
+                    }).then( () => {
+                        this.$toast.success('截图成功，请手动关闭窗口')
+                    })
+
+                    break
             }
         },
         copyText(){
@@ -378,10 +407,19 @@ export default {
             return getAllTimeChart(this.QQPreviewData)
         },
         getTextTemplates(){
+            // TODO 筛选报告类型 type
+
             return this.TemplatesConfig.text
         },
         getWebTemplates(){
+            // TODO 筛选报告类型 type
+
             return this.TemplatesConfig.web
+        },
+        getImgTemplates(){
+            // TODO 筛选报告类型 type
+
+            return this.TemplatesConfig.img
         }
     }
 }

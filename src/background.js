@@ -224,3 +224,31 @@ ipcMain.handle('replace-str', async (event, targetPath, data) => {
 ipcMain.handle('open-dir', async (event, path) => {
     shell.showItemInFolder(path)
 })
+
+// 新建窗口，并打开网页文件，进行截图
+ipcMain.handle('open-window', async (event, path) => {
+    let newWin = new BrowserWindow({
+        width: 390,
+        height: 844,
+        title: '保存截图后，请关闭该窗口',
+        autoHideMenuBar: true,
+        webPreferences:{
+            nodeIntegration: true,
+            enableRemoteModule: true
+        }
+    })
+
+    newWin.loadFile(path)
+
+    newWin.on('close', () => {
+        newWin = null
+
+        // TODO 自动删除TEMP目录
+
+    })
+})
+
+// 获取临时目录
+ipcMain.handle('get-temp', async (event) => {
+    return app.getPath('temp')
+})
