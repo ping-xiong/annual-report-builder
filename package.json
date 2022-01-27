@@ -9,7 +9,8 @@
     "electron:build": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
-    "postuninstall": "electron-builder install-app-deps"
+    "postuninstall": "electron-builder install-app-deps",
+    "publish": "vue-cli-service electron:build --win --x64 -p always"
   },
   "main": "background.js",
   "dependencies": {
@@ -18,6 +19,7 @@
     "dayjs": "^1.10.7",
     "echarts": "^5.2.2",
     "echarts-wordcloud": "^2.0.0",
+    "electron-updater": "^4.6.1",
     "js-md5": "^0.7.3",
     "lei-stream": "^1.4.2",
     "nodejieba": "^2.6.0",

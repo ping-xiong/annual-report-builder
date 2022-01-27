@@ -11,6 +11,7 @@ module.exports = {
         artifactName: '${productName} Setup ${version}-${arch}.${ext}',
         appId: "tech.pingx.report",
         asar: false,
+        publish: ['github'],
         win:{
           icon: "public/favicon.ico"
         },

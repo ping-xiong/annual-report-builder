@@ -7,6 +7,8 @@ import * as path from "path"
 
 import parser from '@/util/background/qq/parser'
 
+const { autoUpdater } = require('electron-updater')
+
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 const fs = require('fs')
@@ -84,6 +86,8 @@ app.on('ready', async () => {
         }
     }
     createWindow()
+
+    checkUpdate()
 })
 
 // Exit cleanly on request from parent process in development mode.
@@ -189,17 +193,22 @@ ipcMain.handle('read-config', async () => {
 
 // 复制文件夹
 ipcMain.handle('copy-dir', async (event, fromPath, toPath) => {
-    const copyDir = require('copy-dir')
 
-    const finalPath = toPath + '\\导出文件\\'
+    try {
+        const copyDir = require('copy-dir')
 
-    copyDir.sync(path.join(templatesPath, fromPath).toString(), path.normalize(finalPath), {
-        utimes: true,  // keep add time and modify time
-        mode: true,    // keep file mode
-        cover: true    // cover file when exists, default is true
-    })
+        const finalPath = toPath + '\\导出文件\\'
 
-    return finalPath
+        copyDir.sync(path.join(templatesPath, fromPath).toString(), path.normalize(finalPath), {
+            utimes: true,  // keep add time and modify time
+            mode: true,    // keep file mode
+            cover: true    // cover file when exists, default is true
+        })
+
+        return finalPath
+    }catch (e) {
+        throw e
+    }
 
 })
 
@@ -252,3 +261,40 @@ ipcMain.handle('open-window', async (event, path) => {
 ipcMain.handle('get-temp', async (event) => {
     return app.getPath('temp')
 })
+
+// 打开调试模式
+ipcMain.handle('open-dev-tool', async (event) => {
+    win.webContents.openDevTools()
+})
+
+function checkUpdate(){
+    //检测更新
+    autoUpdater.checkForUpdates()
+
+    //监听'error'事件
+    autoUpdater.on('error', (err) => {
+        console.log(err)
+    })
+
+    //监听'update-available'事件，发现有新版本时触发
+    autoUpdater.on('update-available', () => {
+        console.log('found new version')
+    })
+
+    //默认会自动下载新版本，如果不想自动下载，设置autoUpdater.autoDownload = false
+
+    //监听'update-downloaded'事件，新版本下载完成时触发
+    autoUpdater.on('update-downloaded', () => {
+        dialog.showMessageBox({
+            type: 'info',
+            title: '应用更新',
+            message: '发现新版本，是否更新？',
+            buttons: ['是', '否']
+        }).then((buttonIndex) => {
+            if(buttonIndex.response === 0) {  //选择是，则退出程序，安装新版本
+                autoUpdater.quitAndInstall()
+                app.quit()
+            }
+        })
+    })
+}

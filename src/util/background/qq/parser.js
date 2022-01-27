@@ -410,7 +410,12 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting, log
         // console.log('end');
         // 截取TOP N数据并降序
         const topCutWords = (Object.entries(cutWords).sort(([, a], [, b]) => a - b).slice(-commonSetting.maxKeywords)).reverse()
-        const sortRepeats = repeaters.sort( (a,b) => a.count > b.count ? 1 : -1 ).slice(-commonSetting.maxRepeaters).reverse()
+
+        let sortRepeats = []
+        if (repeaters.length > 0){
+            sortRepeats = repeaters.sort( (a,b) => a.count > b.count ? 1 : -1 ).slice(-commonSetting.maxRepeaters).reverse()
+        }
+
 
         win.webContents.send('update-percent', 100)
         // 发送完成的数据到渲染进程

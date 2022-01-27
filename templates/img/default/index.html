@@ -42,7 +42,7 @@
 
             </div>
 
-            <div class="page-4 page">
+            <div class="page-4 page" v-if="viewData.topRepeat.length > 0">
 
                 <div class="pd-box index999">
                     <p>还记得当年我们一起复读过的内容吗？</p>
@@ -101,9 +101,9 @@
                     <p class="final-text">@{{ viewData.maxWordName }}</p>
                     <div class="line"></div>
 
-                    <p class="final-title"># 复读了<span class="red">{{ viewData.maxRepeat }}</span>次的复读机</p>
-                    <p class="final-text">@{{ viewData.maxRepeatName }}</p>
-                    <div class="line"></div>
+                    <p class="final-title" v-if="viewData.maxRepeat > 0"># 复读了<span class="red">{{ viewData.maxRepeat }}</span>次的复读机</p>
+                    <p class="final-text" v-if="viewData.maxRepeat > 0">@{{ viewData.maxRepeatName }}</p>
+                    <div class="line" v-if="viewData.maxRepeat > 0"></div>
 
                     <p class="final-title"># 发了<span class="red">{{ viewData.maxImg }}</span>张图的斗图王</p>
                     <p class="final-text">@{{ viewData.maxImgName }}</p>

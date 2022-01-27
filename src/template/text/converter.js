@@ -48,6 +48,13 @@ export default function (content, data){
     let activePeriodResult = getTopActiveTime(data.activePeriod)
     let activePeriod = activePeriodResult.activePeriod
     // let activePeriodData = activePeriodResult.activePeriodData
+
+    let topRepeatContent = ''
+    let topRepeatContentCount = ''
+    if (data.sortRepeats.length > 0){
+        topRepeatContent = data.sortRepeats[0].content.trim()
+        topRepeatContentCount = data.sortRepeats[0].count
+    }
     
     // 开始替换字符串
     content = content.replace('{{time}}', getSelectedTime(data.setting))
@@ -58,8 +65,8 @@ export default function (content, data){
         .replace('{{book}}', getBookCount(totalWords))
         .replace('{{totalImg}}', totalImg)
         .replace('{{keywords}}', keywords)
-        .replace('{{topRepeatContent}}', data.sortRepeats[0].content.trim())
-        .replace('{{topRepeatContentCount}}', data.sortRepeats[0].count)
+        .replace('{{topRepeatContent}}', topRepeatContent)
+        .replace('{{topRepeatContentCount}}', topRepeatContentCount)
         .replace('{{topLengthContent}}', data.longestContent.trim())
         .replace('{{topLengthContentName}}', data.longestContentName.trim())
         .replace('{{maxMsgDate}}', activeDate)
