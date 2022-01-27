@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts-wordcloud@2.1.0-beta/dist/echarts-wordcloud.min.js"></script>
+
+    <link rel="stylesheet" href="./css/fullpage.css">
+    <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.compat.min.css" integrity="sha512-b42SanD3pNHoihKwgABd18JUZ2g9j423/frxIP5/gtYgfBz/0nDHGdY/3hi+3JwhSckM3JLklQ/T6tJmV7mZEw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="./js/fullpage.js"></script>
+
+    <title>报告</title>
+</head>
+<body>
+
+<div id="app">
+    <div class="fullpage-container" :style="fullHeight">
+        <div class="fullpage-wp" v-fullpage="opts" ref="fullpage">
+            <div class="page-1 page">
+                <img src="./imgs/page1top.svg" class="top-img rotate180" alt="">
+                <h3 class="margin-0 text-color sub-title" v-animate="{value: 'fadeInLeft'}">{{viewData.date}}</h3>
+                <h1 class="margin-0 text-color title" v-animate="{value: 'fadeIn'}">{{viewData.name}}</h1>
+                <h3 class="margin-0 text-color sub-title" v-animate="{value: 'fadeInRight'}">{{viewData.title}}</h3>
+
+
+                <p class="circle infinite" @click="start" v-animate="{value: 'heartBeat'}">开启</p>
+
+                <img src="./imgs/page1.svg" class="bottom-img" >
+            </div>
+            <div class="page-2 page">
+                <img src="./imgs/page2.svg" class="top-img rotate180" alt="">
+
+                <div class="pd-box index999">
+                    <p class="text-color" v-animate="{value: 'slideInDown'}">在这一年里，我们活跃人数为<span class="text-highlight">{{ viewData.memberCount }}</span>，总共发了<span class="text-highlight">{{viewData.totalMsg}}</span>条消息，</p>
+                    <p class="text-color" v-animate="{value: 'slideInDown', delay: 300}">总<span class="text-highlight">{{ viewData.totalWords }}</span>字，相当于<span class="text-highlight">{{ viewData.bookCount }}</span>本《西游记》，</p>
+                    <p class="text-color" v-animate="{value: 'slideInDown', delay: 600}">我们共发了<span class="text-highlight">{{ viewData.totalImg  }}</span>张图片，可以整理成一本回忆满满的相册吧！</p>
+                </div>
+
+                <img src="./imgs/page2top.svg" class="bottom-img" alt="">
+            </div>
+            <div class="page-3 page">
+                <img src="./imgs/page2.svg" class="top-img rotate180" alt="">
+
+                <div class="pd-box index999">
+                    <div id="wordcloud" ref="wordcloud" :style="sizeForChart"></div>
+                </div>
+
+                <img src="./imgs/page2top.svg" class="bottom-img" alt="">
+            </div>
+
+            <div class="page-4 page">
+                <img src="./imgs/page2.svg" class="top-img rotate180" alt="">
+
+                <div class="pd-box index999">
+                    <p class="text-color" v-animate="{value: 'slideInDown'}">还记得当年我们一起复读过的内容吗？</p>
+                    <p class="text-color text-highlight" v-animate="{value: 'slideInDown', delay: 300}">"{{ viewData.topRepeat }}"</p>
+                    <p class="text-color" v-animate="{value: 'slideInDown', delay: 600}">一共复读了 <span class="text-highlight">{{ viewData.topRepeatCount }}</span> 次。</p>
+                </div>
+
+                <img src="./imgs/page2top.svg" class="bottom-img" alt="">
+            </div>
+
+            <div class="page-5 page">
+                <img src="./imgs/page2.svg" class="top-img rotate180" alt="">
+
+                <div class="pd-box index999">
+                    <p class="text-color" v-animate="{value: 'slideInDown'}"><span class="text-highlight">@{{ viewData.longestContentName }}</span>说：</p>
+                    <p class="text-color" v-animate="{value: 'slideInDown', delay: 300}">"{{ viewData.longestContent }}"</p>
+                    <p class="text-color" v-animate="{value: 'slideInDown', delay: 600}">这一年，这条最长的消息还有印象吗？</p>
+                </div>
+
+                <img src="./imgs/page2top.svg" class="bottom-img" alt="">
+            </div>
+
+            <div class="page-6 page">
+                <img src="./imgs/page2.svg" class="top-img rotate180" alt="">
+
+                <div class="pd-box index999">
+                    <div class="pd-box">
+                        <p class="text-color" v-animate="{value: 'slideInDown'}"><span class="text-highlight">{{ viewData.activeDate }}</span> 是我们的最活跃的时间</p>
+                        <p class="text-color" v-animate="{value: 'slideInDown', delay: 300}">一共发了<span class="text-highlight">{{ viewData.activeDateData }}</span>条消息。</p>
+                    </div>
+                    <div id="barChar" ref="barChar" :style="sizeForBarChart"></div>
+                </div>
+
+                <img src="./imgs/page2top.svg" class="bottom-img" alt="">
+            </div>
+
+            <div class="page-7 page">
+                <img src="./imgs/page2.svg" class="top-img rotate180" alt="">
+
+                <div class="pd-box index999">
+                    <div class="pd-box">
+                        <p class="text-color" v-animate="{value: 'slideInDown'}">在一天中，我们喜欢在<span class="text-highlight">{{ viewData.activePeriod }}</span>聊天</p>
+                        <p class="text-color" v-animate="{value: 'slideInDown', delay: 300}">那个时候的讨论一定很激烈吧！</p>
+                    </div>
+                    <div id="lineChar" ref="lineChar" :style="sizeForBarChart"></div>
+                </div>
+
+                <img src="./imgs/page2top.svg" class="bottom-img" alt="">
+            </div>
+
+            <div class="page-8 page">
+
+                <img src="./imgs/earth.svg" class="header" alt="">
+
+                <div class="final">
+
+                    <p class="text-color text-highlight center-text" v-animate="{value: 'slideInDown'}">{{ viewData.name }}</p>
+                    <p class="text-color center-text" v-animate="{value: 'slideInDown', delay: 300}">总结</p>
+
+                    <div class="line"></div>
+
+                    <p class="final-title" v-animate="{value: 'slideInLeft'}"># 被提到了<span class="red">{{ viewData.topKeywordCount }}</span>次的关键词</p>
+                    <p class="final-text" v-animate="{value: 'slideInLeft'}">{{ viewData.topKeyword }}</p>
+                    <div class="line"></div>
+
+                    <p class="final-title" v-animate="{value: 'slideInRight'}"># 发了<span class="red">{{ viewData.maxWords }}</span>条消息的话痨</p>
+                    <p class="final-text" v-animate="{value: 'slideInRight'}">@{{ viewData.maxWordName }}</p>
+                    <div class="line"></div>
+
+                    <p class="final-title" v-animate="{value: 'slideInLeft'}"># 复读了<span class="red">{{ viewData.maxRepeat }}</span>次的复读机</p>
+                    <p class="final-text" v-animate="{value: 'slideInLeft'}">@{{ viewData.maxRepeatName }}</p>
+                    <div class="line"></div>
+
+                    <p class="final-title" v-animate="{value: 'slideInRight'}"># 发了<span class="red">{{ viewData.maxImg }}</span>张图的斗图王</p>
+                    <p class="final-text" v-animate="{value: 'slideInRight'}">@{{ viewData.maxImgName }}</p>
+                    <div class="line"></div>
+
+                    <p class="final-title" v-animate="{value: 'slideInLeft'}"># 活跃了<span class="red">{{ viewData.maxActive }}</span>天</p>
+                    <p class="final-text" v-animate="{value: 'slideInLeft'}">@{{ viewData.maxActiveName }}</p>
+
+                </div>
+
+                <p class="bottom-img center-text white"><a style="color: #ffffff" href="https://pingxonline.com/2022/01/26/%e3%80%90%e5%bc%80%e6%ba%90%e3%80%91%e5%b9%b4%e5%ba%a6%e6%8a%a5%e5%91%8a%e7%94%9f%e6%88%90%e5%99%a8/" target="_blank">此报告由[年度报告生成器]生成</a> </p>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="./js/index.js"></script>
+</body>
+</html>
