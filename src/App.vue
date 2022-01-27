@@ -87,7 +87,7 @@
                 <span>如果您是购买得到的</span>
                 <span>请退款并差评</span>
 
-                <span class="mt-2">版本: v0.1.0</span>
+                <span class="mt-2">版本: v0.2.0</span>
             </div>
 
         </v-navigation-drawer>
