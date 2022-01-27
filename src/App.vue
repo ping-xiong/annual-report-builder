@@ -126,7 +126,7 @@
             <v-spacer></v-spacer>
 
             <v-btn
-                @click="openLink('https://github.com/ping-xiong/QQ-report')"
+                @click="openLink('https://github.com/ping-xiong/annual-report-builder')"
                 target="_blank"
                 text
                 class="no-drag"
