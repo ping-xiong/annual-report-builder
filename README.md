@@ -32,7 +32,7 @@
 
 ## 交流群
 搜Q群：142815653  
-![image](https://github.com/ping-xiong/annual-report-builder/blob/master/%E9%A2%84%E8%A7%88%E5%9B%BE/qq.png)
+![image](https://raw.githubusercontent.com/ping-xiong/annual-report-builder/main/%E9%A2%84%E8%A7%88%E5%9B%BE/qq.png)
 
 ## 自行构建
 1. 把代码下载到本地
@@ -55,11 +55,11 @@ vue-cli-service electron:build
 ```
 
 ## 软件截图
-![image](https://github.com/ping-xiong/annual-report-builder/blob/master/%E9%A2%84%E8%A7%88%E5%9B%BE/1.png)  
-![image](https://github.com/ping-xiong/annual-report-builder/blob/master/%E9%A2%84%E8%A7%88%E5%9B%BE/2.png)  
-![image](https://github.com/ping-xiong/annual-report-builder/blob/master/%E9%A2%84%E8%A7%88%E5%9B%BE/3.png)  
-![image](https://github.com/ping-xiong/annual-report-builder/blob/master/%E9%A2%84%E8%A7%88%E5%9B%BE/4.png)  
-![image](https://github.com/ping-xiong/annual-report-builder/blob/master/%E9%A2%84%E8%A7%88%E5%9B%BE/5.png)  
+![image](https://raw.githubusercontent.com/ping-xiong/annual-report-builder/main/%E9%A2%84%E8%A7%88%E5%9B%BE/1.png)  
+![image](https://raw.githubusercontent.com/ping-xiong/annual-report-builder/main/%E9%A2%84%E8%A7%88%E5%9B%BE/2.png)  
+![image](https://raw.githubusercontent.com/ping-xiong/annual-report-builder/main/%E9%A2%84%E8%A7%88%E5%9B%BE/3.png)  
+![image](https://raw.githubusercontent.com/ping-xiong/annual-report-builder/main/%E9%A2%84%E8%A7%88%E5%9B%BE/4.png)  
+![image](https://raw.githubusercontent.com/ping-xiong/annual-report-builder/main/%E9%A2%84%E8%A7%88%E5%9B%BE/5.png)  
 
 ## 博客
 [PingX](http://pingxonline.com/)
