@@ -38,7 +38,33 @@
 
             <v-expansion-panel>
                 <v-expansion-panel-header>
-                    如何修改或者添加模板？
+                    如何分享年度报告？
+                </v-expansion-panel-header>
+                <v-expansion-panel-content>
+                    <p>在您预览作品的时候，您可以选择导出的成品类型：网页版，长图版，文字版等。</p>
+                    <h5>网页版</h5>
+                    <p>如果您拥有自己的服务器，可以选择该导出类型，把导出的所有文件上传到网站根目录，即可通过域名进行访问查看数据。</p>
+                    <p>本地查看方法：双击index.html文件，用自带浏览器打开。</p>
+                    <h5>长图版</h5>
+                    <p>该类型会打开一个窗口，等待片刻，会提示您保存图片，保存到任意目录，方便分享。</p>
+                    <h5>纯文本版</h5>
+                    <p>该类型只有文本，生成后，在同界面出现导出结果。可以点击【一键复制】，把内容直接复制到剪切板，方便分享。</p>
+                </v-expansion-panel-content>
+            </v-expansion-panel>
+
+            <v-expansion-panel>
+                <v-expansion-panel-header>
+                    如何预览已生成的年度报告？
+                </v-expansion-panel-header>
+                <v-expansion-panel-content>
+                    <p>已生成的年度报告会保存在左侧菜单【年度报告管理】页面，点击 <v-icon color="primary" small>mdi-play-circle</v-icon> 按钮即可预览该报告，在预览界面可以导出任意类型的成品。</p>
+                    <p>点击 <v-icon color="red" small>mdi-delete-circle</v-icon> 则会删除该报告。</p>
+                </v-expansion-panel-content>
+            </v-expansion-panel>
+
+            <v-expansion-panel>
+                <v-expansion-panel-header>
+                    如何修改或者添加导出模板？
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
                     <p>在软件的根目录，找到 <b>templates</b> 文件夹，里面存放各种模板的文件。</p>
