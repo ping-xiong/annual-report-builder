@@ -58,8 +58,7 @@ var app = new Vue({
             that.lineChartFinished = true
         })
 
-        document.title = this.viewData.name + '-' + this.viewData.title
-
+        document.title = "请等待弹窗保存截图后关闭此窗口"
     },
     methods:{
         start(){

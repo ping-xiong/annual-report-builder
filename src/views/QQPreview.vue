@@ -337,6 +337,10 @@ export default {
         if (this.getWebTemplates.length > 0){
             this.webTemplateSelectedPath = this.getWebTemplates[0].path
         }
+
+        if (this.getImgTemplates.length > 0){
+            this.imgTemplateSelectedPath = this.getImgTemplates[0].path
+        }
     },
     methods: {
         toHomepage() {
