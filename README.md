@@ -50,12 +50,16 @@
 
 开发环境  
 ```
-vue-cli-service electron:serve
+npm run electron:serve
 ```
-发布
+打包
 ```
-vue-cli-service electron:build
+npm run electron:build
 ```
+
+## 仓库地址
+[Gitee](https://gitee.com/LiangJiaping/annual-report-builder)  
+[Github](https://github.com/ping-xiong/annual-report-builder)
 
 ## 软件截图
 ![image](https://raw.githubusercontent.com/ping-xiong/annual-report-builder/main/%E9%A2%84%E8%A7%88%E5%9B%BE/1.png)  
