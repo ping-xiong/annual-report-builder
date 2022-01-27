@@ -8,6 +8,7 @@ module.exports = {
       mainProcessWatch: ['src/util/background'],
       builderOptions: {
         productName: "年度报告生成器",
+        artifactName: '${productName} Setup ${version}-${platformName}-${arch}.${ext}',
         appId: "tech.pingx.report",
         asar: false,
         win:{
