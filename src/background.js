@@ -230,7 +230,7 @@ ipcMain.handle('open-window', async (event, path) => {
     let newWin = new BrowserWindow({
         width: 390,
         height: 844,
-        title: '保存截图后，请关闭该窗口',
+        title: '请等待弹窗保存截图',
         autoHideMenuBar: true,
         webPreferences:{
             nodeIntegration: true,
