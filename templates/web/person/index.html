@@ -24,8 +24,9 @@
             <div class="page-1 page">
                 <img src="./imgs/page1top.svg" class="top-img rotate180" alt="">
                 <h3 class="margin-0 text-color sub-title" v-animate="{value: 'fadeInLeft'}">{{viewData.date}}</h3>
-                <h1 class="margin-0 text-color title" v-animate="{value: 'fadeIn'}">{{viewData.name}}</h1>
-                <h3 class="margin-0 text-color sub-title" v-animate="{value: 'fadeInRight'}">{{viewData.title}}</h3>
+                <h1 class="margin-0 text-color sub-title" v-animate="{value: 'fadeIn'}">{{viewData.name}}</h1>
+                <h1 class="margin-0 text-color title" v-animate="{value: 'fadeIn'}">{{member.name}}</h1>
+                <h3 class="margin-0 text-color sub-title" v-animate="{value: 'fadeInRight'}">个人{{viewData.title}}</h3>
 
 
                 <p class="circle infinite" @click="start" v-animate="{value: 'heartBeat'}">开启</p>
@@ -36,9 +37,9 @@
                 <img src="./imgs/page2.svg" class="top-img rotate180" alt="">
 
                 <div class="pd-box index999">
-                    <p class="text-color" v-animate="{value: 'slideInDown'}">在{{viewData.date}}里，我们活跃人数为<span class="text-highlight">{{ viewData.memberCount }}</span>，总共发了<span class="text-highlight">{{viewData.totalMsg}}</span>条消息，</p>
+                    <p class="text-color" v-animate="{value: 'slideInDown'}">在 {{viewData.date}} 里，你总共发了<span class="text-highlight">{{viewData.totalMsg}}</span>条消息，</p>
                     <p class="text-color" v-animate="{value: 'slideInDown', delay: 300}">总<span class="text-highlight">{{ viewData.totalWords }}</span>字，相当于<span class="text-highlight">{{ viewData.bookCount }}</span>本《西游记》，</p>
-                    <p class="text-color" v-animate="{value: 'slideInDown', delay: 600}">我们共发了<span class="text-highlight">{{ viewData.totalImg  }}</span>张图片，可以整理成一本回忆满满的相册吧！</p>
+                    <p class="text-color" v-animate="{value: 'slideInDown', delay: 600}">你还发了<span class="text-highlight">{{ viewData.totalImg  }}</span>张图片，可以整理成一本回忆满满的相册吧！</p>
                 </div>
 
                 <img src="./imgs/page2top.svg" class="bottom-img" alt="">
@@ -53,13 +54,13 @@
                 <img src="./imgs/page2top.svg" class="bottom-img" alt="">
             </div>
 
-            <div class="page-4 page" v-if="viewData.topRepeat.length > 0">
+            <div class="page-4 page">
                 <img src="./imgs/page2.svg" class="top-img rotate180" alt="">
 
                 <div class="pd-box index999">
-                    <p class="text-color" v-animate="{value: 'slideInDown'}">还记得我们一起复读过的内容吗？</p>
-                    <p class="text-color text-highlight" v-animate="{value: 'slideInDown', delay: 300}">"{{ viewData.topRepeat }}"</p>
-                    <p class="text-color" v-animate="{value: 'slideInDown', delay: 600}">一共复读了 <span class="text-highlight">{{ viewData.topRepeatCount }}</span> 次。</p>
+                    <p class="text-color" v-animate="{value: 'slideInDown'}">还记得你最晚的消息吗？</p>
+                    <p class="text-color text-highlight" v-animate="{value: 'slideInDown', delay: 300}">"{{ member.lateMsgContent }}"</p>
+                    <p class="text-color" v-animate="{value: 'slideInDown', delay: 600}">在 <span class="text-highlight">{{ member.lateMsgTime }}</span> 发出</p>
                 </div>
 
                 <img src="./imgs/page2top.svg" class="bottom-img" alt="">
@@ -69,9 +70,9 @@
                 <img src="./imgs/page2.svg" class="top-img rotate180" alt="">
 
                 <div class="pd-box index999">
-                    <p class="text-color" v-animate="{value: 'slideInDown'}"><span class="text-highlight">@{{ viewData.longestContentName }}</span>说：</p>
+                    <p class="text-color" v-animate="{value: 'slideInDown'}">你说：</p>
                     <p class="text-color" v-animate="{value: 'slideInDown', delay: 300}">"{{ viewData.longestContent }}"</p>
-                    <p class="text-color" v-animate="{value: 'slideInDown', delay: 600}">这条最长的消息还有印象吗？</p>
+                    <p class="text-color" v-animate="{value: 'slideInDown', delay: 600}">你发的这条最长的消息还有印象吗？</p>
                 </div>
 
                 <img src="./imgs/page2top.svg" class="bottom-img" alt="">
@@ -82,7 +83,7 @@
 
                 <div class="pd-box index999">
                     <div class="pd-box">
-                        <p class="text-color" v-animate="{value: 'slideInDown'}"><span class="text-highlight">{{ viewData.activeDate }}</span> 是我们的最活跃的时间</p>
+                        <p class="text-color" v-animate="{value: 'slideInDown'}"><span class="text-highlight">{{ viewData.activeDate }}</span> 是你最活跃的时间</p>
                         <p class="text-color" v-animate="{value: 'slideInDown', delay: 300}">一共发了<span class="text-highlight">{{ viewData.activeDateData }}</span>条消息。</p>
                     </div>
                     <div id="barChar" ref="barChar" :style="sizeForBarChart"></div>
@@ -96,7 +97,7 @@
 
                 <div class="pd-box index999">
                     <div class="pd-box">
-                        <p class="text-color" v-animate="{value: 'slideInDown'}">在一天中，我们喜欢在<span class="text-highlight">{{ viewData.activePeriod }}</span>聊天</p>
+                        <p class="text-color" v-animate="{value: 'slideInDown'}">在一天中，你喜欢在<span class="text-highlight">{{ viewData.activePeriod }}</span>聊天</p>
                         <p class="text-color" v-animate="{value: 'slideInDown', delay: 300}">那个时候的讨论一定很激烈吧！</p>
                     </div>
                     <div id="lineChar" ref="lineChar" :style="sizeForBarChart"></div>
@@ -111,7 +112,8 @@
 
                 <div class="final">
 
-                    <p class="text-color text-highlight center-text" v-animate="{value: 'slideInDown'}">{{ viewData.name }}</p>
+                    <p class="text-color center-text" v-animate="{value: 'slideInDown'}">{{ viewData.name }}</p>
+                    <p class="text-color text-highlight center-text" v-animate="{value: 'slideInDown'}">{{ member.name }}</p>
                     <p class="text-color center-text" v-animate="{value: 'slideInDown', delay: 300}">总结</p>
 
                     <div class="line"></div>
@@ -120,20 +122,13 @@
                     <p class="final-text" v-animate="{value: 'slideInLeft'}">{{ viewData.topKeyword }}</p>
                     <div class="line"></div>
 
-                    <p class="final-title" v-animate="{value: 'slideInRight'}"># 发了<span class="red">{{ viewData.maxWords }}</span>条消息的话痨</p>
-                    <p class="final-text" v-animate="{value: 'slideInRight'}">@{{ viewData.maxWordName }}</p>
+                    <p class="final-title" v-animate="{value: 'slideInRight'}"># 发了<span class="red">{{ viewData.maxWords }}</span>条消息</p>
                     <div class="line"></div>
 
-                    <p class="final-title" v-animate="{value: 'slideInLeft'}" v-if="viewData.maxRepeat > 0"># 复读了<span class="red">{{ viewData.maxRepeat }}</span>次的复读机</p>
-                    <p class="final-text" v-animate="{value: 'slideInLeft'}" v-if="viewData.maxRepeat > 0">@{{ viewData.maxRepeatName }}</p>
-                    <div class="line" v-if="viewData.maxRepeat > 0"></div>
-
-                    <p class="final-title" v-animate="{value: 'slideInRight'}"># 发了<span class="red">{{ viewData.maxImg }}</span>张图的斗图王</p>
-                    <p class="final-text" v-animate="{value: 'slideInRight'}">@{{ viewData.maxImgName }}</p>
+                    <p class="final-title" v-animate="{value: 'slideInRight'}"># 发了<span class="red">{{ viewData.maxImg }}</span>张图</p>
                     <div class="line"></div>
 
                     <p class="final-title" v-animate="{value: 'slideInLeft'}"># 活跃了<span class="red">{{ viewData.maxActive }}</span>天</p>
-                    <p class="final-text" v-animate="{value: 'slideInLeft'}">@{{ viewData.maxActiveName }}</p>
 
                 </div>
 

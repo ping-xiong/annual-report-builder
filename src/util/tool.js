@@ -124,7 +124,7 @@ export function getTopActiveDate(chartData, setting) {
     for (const chartDataKey in chartData) {
         if (chartData[chartDataKey] > activeDateData){
             activeDateData = chartData[chartDataKey]
-            activeDate = chartDataKey
+            activeDate = parseInt(chartDataKey) + 1
         }
     }
 

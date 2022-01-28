@@ -91,6 +91,9 @@ var app = new Vue({
         sizeForBarChart(){
             var w = document.getElementById('app').clientWidth
             return 'height: 300px; width: ' + w + 'px;'
+        },
+        member(){
+            return this.viewData.members[0]
         }
     },
     watch:{

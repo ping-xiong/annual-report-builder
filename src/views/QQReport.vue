@@ -86,9 +86,8 @@
                         value="group"
                     ></v-radio>
                     <v-radio
-                        label="个人年度报告(开发中)"
+                        label="个人年度报告"
                         value="person"
-                        disabled
                     ></v-radio>
                     <v-radio
                         label="情侣年度报告(开发中)"
@@ -167,11 +166,6 @@ export default {
 
             if (this.path.length === 0){
                 this.$toast.error('请先选择文件')
-                return
-            }
-            let qqReg = /[1-9]([0-9]{5,11})/
-            if (this.setting.report === 'person' && !qqReg.test(this.setting.targetQQ)){
-                this.$toast.error('QQ格式不正确，请重新输入')
                 return
             }
 

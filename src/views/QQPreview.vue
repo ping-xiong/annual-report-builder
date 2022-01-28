@@ -348,6 +348,12 @@ export default {
             this.$store.commit('updateSelectedItem', 0)
         },
         exportProduct(){
+
+            if (this.QQPreviewData.members.length === 0){
+                this.$toast.error('没有分析数据，请确保聊天记录内容格式符合要求，或加群反馈')
+                return
+            }
+
             switch (this.product) {
                 case 'txt':
                     ipcRenderer.invoke('read-txt', this.textTemplateSelectedPath).then( res => {
@@ -411,19 +417,13 @@ export default {
             return getAllTimeChart(this.QQPreviewData)
         },
         getTextTemplates(){
-            // TODO 筛选报告类型 type
-
-            return this.TemplatesConfig.text
+            return this.TemplatesConfig.text.filter(template => template.type === this.QQPreviewData.setting.report)
         },
         getWebTemplates(){
-            // TODO 筛选报告类型 type
-
-            return this.TemplatesConfig.web
+            return this.TemplatesConfig.web.filter(template => template.type === this.QQPreviewData.setting.report)
         },
         getImgTemplates(){
-            // TODO 筛选报告类型 type
-
-            return this.TemplatesConfig.img
+            return this.TemplatesConfig.img.filter(template => template.type === this.QQPreviewData.setting.report)
         }
     }
 }

@@ -13,9 +13,16 @@ export default function getWordcloud (QQPreviewData) {
 
     let time = getSelectedTime(QQPreviewData.setting)
 
+    let title = ''
+    if (QQPreviewData.setting.report === 'person'){
+        title = "你在" + QQPreviewData.groupName + '-' + time + '高频关键词'
+    }else{
+        title = QQPreviewData.groupName + '-' + time + '高频关键词'
+    }
+
     return {
         title:{
-            text: QQPreviewData.groupName + '-' + time + '高频关键词',
+            text: title,
             textStyle:{
                 textBorderColor: '#fff',
                 textBorderWidth: 2

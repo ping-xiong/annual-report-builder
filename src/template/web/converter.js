@@ -54,15 +54,18 @@ export function getData(data, chartData) {
     webData['{{lineChartOption}}'] = chartData.activeHoursData
     webData['{{barChartOption}}'] = chartData.getAllTimeData
 
-
-    viewData.title = getSelectedTimeDetail(data.setting).name + "报告"
+    let timeDetail = getSelectedTimeDetail(data.setting)
+    viewData.title = timeDetail.name + "报告"
     if (data.setting.type === 'ranger'){
         viewData.title = '报告'
     }
 
+    viewData.date = timeDetail.time
+
     viewData.name = data.groupName
     viewData.memberCount = data.members.length
 
+    viewData.members = data.members
 
     let topData = getTopData(data.members)
     viewData.totalMsg = topData.totalMsg
@@ -90,8 +93,10 @@ export function getData(data, chartData) {
     viewData.longestContent = data.longestContent
     viewData.longestContentName = data.longestContentName
 
-    viewData.topKeyword = data.topCutWords[0][0]
-    viewData.topKeywordCount = data.topCutWords[0][1]
+    if (data.topCutWords.length > 0){
+        viewData.topKeyword = data.topCutWords[0][0]
+        viewData.topKeywordCount = data.topCutWords[0][1]
+    }
 
 
     let activeDateResult = getTopActiveDate(data.chartData, data.setting)

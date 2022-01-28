@@ -2,6 +2,7 @@ export default {
     title: '年度报告',
     date: '2021年',
     name: '群聊名称',
+    members: [],
     memberCount: 0,
     totalMsg: 0,
     totalImg: 0,

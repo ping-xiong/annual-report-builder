@@ -3,10 +3,24 @@ export default function getAllTimeChart(QQPreviewData){
     let xAxisData = []
     let seriesData = []
     let data = QQPreviewData.chartData
-    for (const dataKey in data) {
-        xAxisData.push( (parseInt(dataKey) + 1) + '月')
-        seriesData.push( data[dataKey] )
+
+    if (QQPreviewData.setting.type === "year"){
+        for (const dataKey in data) {
+            xAxisData.push( (parseInt(dataKey) + 1) + '月')
+            seriesData.push( data[dataKey] )
+        }
+    }else if (QQPreviewData.setting.type === "month"){
+        for (const dataKey in data) {
+            xAxisData.push( dataKey + '日')
+            seriesData.push( data[dataKey] )
+        }
+    }else{
+        for (const dataKey in data) {
+            xAxisData.push(dataKey)
+            seriesData.push( data[dataKey] )
+        }
     }
+
 
     return {
         tooltip: {
