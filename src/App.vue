@@ -87,7 +87,7 @@
                 <span>如果您是购买得到的</span>
                 <span>请退款并差评</span>
 
-                <span class="mt-2">版本: v0.2.0</span>
+                <updater class="mt-2"></updater>
             </div>
 
         </v-navigation-drawer>
@@ -174,9 +174,14 @@
 <script>
 const { ipcRenderer } = require('electron')
 import {mapState} from 'vuex'
+import updater from "@/components/updater"
 
 export default {
     name: 'App',
+
+    components:{
+        updater
+    },
 
     data: () => ({
 
@@ -200,6 +205,10 @@ export default {
             this.$store.commit('updateTemplatesConfig', res)
         })
 
+        // 获取当前版本
+        ipcRenderer.invoke('get-version').then( res => {
+            this.$store.commit('updateVersion', res)
+        })
     },
 
     methods:{
@@ -223,7 +232,7 @@ export default {
     },
 
     computed:{
-        ...mapState(['percent', 'showLoadingBar']),
+        ...mapState(['percent', 'showLoadingBar', 'version']),
         // 激活的菜单项
         selectedItem:{
             get(){
