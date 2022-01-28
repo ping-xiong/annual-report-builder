@@ -378,12 +378,12 @@ parser.parse = async function (path, lineCount, setting, win, commonSetting, log
                     }
 
                     // 排除QQ号，不进行统计
-                    if (commonSetting.excludeQQ.indexOf(lastQQ) !== -1) {
+                    if (commonSetting.excludeQQ.indexOf(lastQQ) !== -1 && setting.report !== 'person') {
                         isSkip = true
                     }
 
                     // 个人报告更高优先级，无视排除列表
-                    if (setting.report === 'person') {
+                    if (!isSkip && setting.report === 'person') {
                         isSkip = setting.targetQQ !== lastQQ;
                     }
                 }

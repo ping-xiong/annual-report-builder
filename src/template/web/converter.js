@@ -65,6 +65,7 @@ export function getData(data, chartData) {
     viewData.name = data.groupName
     viewData.memberCount = data.members.length
 
+    viewData.members = data.members
 
     let topData = getTopData(data.members)
     viewData.totalMsg = topData.totalMsg
@@ -92,8 +93,10 @@ export function getData(data, chartData) {
     viewData.longestContent = data.longestContent
     viewData.longestContentName = data.longestContentName
 
-    viewData.topKeyword = data.topCutWords[0][0]
-    viewData.topKeywordCount = data.topCutWords[0][1]
+    if (data.topCutWords.length > 0){
+        viewData.topKeyword = data.topCutWords[0][0]
+        viewData.topKeywordCount = data.topCutWords[0][1]
+    }
 
 
     let activeDateResult = getTopActiveDate(data.chartData, data.setting)

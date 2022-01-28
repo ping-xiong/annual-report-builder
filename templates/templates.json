@@ -5,6 +5,12 @@
             "type": "group",
             "path": "./web/default",
             "main": "/js/index.js"
+        },
+        {
+            "name": "默认风格",
+            "type": "person",
+            "path": "./web/person",
+            "main": "/js/index.js"
         }
     ],
     "text": [
@@ -19,6 +25,13 @@
             "name": "默认风格",
             "type": "group",
             "path": "./img/default",
+            "main": "/js/index.js",
+            "html": "index.html"
+        },
+        {
+            "name": "默认风格",
+            "type": "person",
+            "path": "./img/person",
             "main": "/js/index.js",
             "html": "index.html"
         }
