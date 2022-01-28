@@ -54,11 +54,13 @@ export function getData(data, chartData) {
     webData['{{lineChartOption}}'] = chartData.activeHoursData
     webData['{{barChartOption}}'] = chartData.getAllTimeData
 
-
-    viewData.title = getSelectedTimeDetail(data.setting).name + "报告"
+    let timeDetail = getSelectedTimeDetail(data.setting)
+    viewData.title = timeDetail.name + "报告"
     if (data.setting.type === 'ranger'){
         viewData.title = '报告'
     }
+
+    viewData.date = timeDetail.time
 
     viewData.name = data.groupName
     viewData.memberCount = data.members.length

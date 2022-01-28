@@ -5,7 +5,7 @@ var app = new Vue({
     },
     data: {
         url: 'https://pingxonline.com/2022/01/26/%e3%80%90%e5%bc%80%e6%ba%90%e3%80%91%e5%b9%b4%e5%ba%a6%e6%8a%a5%e5%91%8a%e7%94%9f%e6%88%90%e5%99%a8/',
-        urlSize: 300,
+        urlSize: 150,
         wordcloudFinished: false,
         barChartFinished: false,
         lineChartFinished: false,
@@ -58,7 +58,7 @@ var app = new Vue({
             that.lineChartFinished = true
         })
 
-        document.title = "请等待弹窗保存截图后关闭此窗口"
+        document.title = "请等待弹窗保存截图后，关闭此窗口"
     },
     methods:{
         start(){
@@ -94,7 +94,7 @@ var app = new Vue({
         }
     },
     watch:{
-        wordcloudFinished(newVal){
+        wordcloudFinished(){
             this.start()
         }
     }
