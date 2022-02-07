@@ -1,13 +1,19 @@
 {
     "web": [
         {
-            "name": "默认风格",
+            "name": "可爱风格",
+            "type": "group",
+            "path": "./web/default2",
+            "main": "/js/index.js"
+        },
+        {
+            "name": "极简风格",
             "type": "group",
             "path": "./web/default",
             "main": "/js/index.js"
         },
         {
-            "name": "默认风格",
+            "name": "极简风格",
             "type": "person",
             "path": "./web/person",
             "main": "/js/index.js"
@@ -22,7 +28,7 @@
     ],
     "img": [
         {
-            "name": "默认风格",
+            "name": "极简风格",
             "type": "group",
             "path": "./img/default",
             "main": "/js/index.js",
