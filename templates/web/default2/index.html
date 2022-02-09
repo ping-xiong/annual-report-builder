@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts-wordcloud@2.1.0-beta/dist/echarts-wordcloud.min.js"></script>
+
+    <link rel="stylesheet" href="./css/fullpage.css">
+    <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.compat.min.css" integrity="sha512-b42SanD3pNHoihKwgABd18JUZ2g9j423/frxIP5/gtYgfBz/0nDHGdY/3hi+3JwhSckM3JLklQ/T6tJmV7mZEw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="./js/fullpage.js"></script>
+
+    <link rel="stylesheet" href="./font/stylesheet.css">
+
+    <title>报告</title>
+</head>
+<body>
+
+<div id="app">
+    <div class="fullpage-container" :style="fullHeight">
+        <div class="fullpage-wp" v-fullpage="opts" ref="fullpage">
+
+            <div class="page-1 page">
+                <img class="top-left-img" src="./imgs/page1/top_left.png">
+
+                <img class="top-right-img" src="./imgs/page1/top_right_el.png" alt="">
+
+                <div class="text-bg">
+
+                    <span class="title sub-title">{{viewData.date}}</span>
+                    <span class="title mb-2 mt-2">{{viewData.name}}</span>
+                    <span class="title sub-title">{{viewData.title}}</span>
+
+                    <div class="btn infinite" v-animate="{value: 'pulse'}">
+                        <span class="title btn-text" @click="start">点击开启</span>
+                    </div>
+                    <span class="title">GO</span>
+
+                </div>
+
+                <img class="bottom-right-img" src="./imgs/page1/bottom_right.png">
+                <img class="bottom-left-img" src="./imgs/page1/bottom_left_el.png" alt="">
+            </div>
+
+            <div class="page-2 page gradient">
+
+                <div class="tiles">
+                    <div class="full-w center-text">
+                        <img class="index999 lines-page2" src="./imgs/page2/lines.png">
+                        <div class="title-bg-page2">
+                            <span class="title other-page-title">{{viewData.title}}</span>
+                        </div>
+                    </div>
+
+                    <img class="right-img infinite" v-animate="{value: 'pulse'}" src="./imgs/page2/star_right.png" alt="">
+
+                    <div class="flex-1 other-page-bg">
+                        <p class="text-color no-shadow" v-animate="{value: 'slideInDown'}">在{{viewData.date}}里，我们活跃人数为<span class="text-highlight no-shadow">{{ viewData.memberCount }}</span>，总共发了<span class="text-highlight">{{viewData.totalMsg}}</span>条消息，</p>
+                        <p class="text-color no-shadow" v-animate="{value: 'slideInDown', delay: 300}">总<span class="text-highlight no-shadow">{{ viewData.totalWords }}</span>字，相当于<span class="text-highlight">{{ viewData.bookCount }}</span>本《西游记》，</p>
+                        <p class="text-color no-shadow" v-animate="{value: 'slideInDown', delay: 600}">我们共发了<span class="text-highlight no-shadow">{{ viewData.totalImg  }}</span>张图片，可以整理成一本回忆满满的相册吧！</p>
+                    </div>
+                </div>
+
+                <img class="bottom-img infinite" v-animate="{value: 'pulse', delay: 300}" style="width: 200px;" src="./imgs/page2/bottom_left.png" alt="">
+                <img class="bottom-right-img infinite" v-animate="{value: 'pulse', delay: 600}" style="width: 200px" src="./imgs/page2/star_bottom_right.png" alt="">
+
+            </div>
+
+            <div class="page-3 page gradient">
+
+                <div class="tiles">
+                    <div class="full-w center-text">
+                        <img class="index999 lines-page2" src="./imgs/page2/lines.png">
+                        <div class="title-bg-page2">
+                            <span class="title other-page-title">{{viewData.title}}</span>
+                        </div>
+                    </div>
+
+                    <img class="right-img infinite" v-animate="{value: 'pulse'}" src="./imgs/page2/star_right.png" alt="">
+
+                    <div class="flex-1 other-page-bg" id="chartBox">
+
+                        <div id="wordcloud" ref="wordcloud" :style="chartBoxSize"></div>
+
+                     </div>
+                </div>
+
+                <img class="bottom-img infinite" v-animate="{value: 'pulse', delay: 300}" style="width: 200px;" src="./imgs/page2/bottom_left.png" alt="">
+                <img class="bottom-right-img infinite" v-animate="{value: 'pulse', delay: 600}" style="width: 200px" src="./imgs/page2/star_bottom_right.png" alt="">
+
+
+            </div>
+
+            <div class="page-4 page gradient" v-if="viewData.topRepeat.length > 0">
+                <div class="tiles">
+                    <div class="full-w center-text">
+                        <img class="index999 lines-page2" src="./imgs/page2/lines.png">
+                        <div class="title-bg-page2">
+                            <span class="title other-page-title">{{viewData.title}}</span>
+                        </div>
+                    </div>
+
+                    <img class="right-img infinite" v-animate="{value: 'pulse'}" src="./imgs/page2/star_right.png" alt="">
+
+                    <div class="flex-1 other-page-bg">
+
+                        <p class="text-color" v-animate="{value: 'slideInDown'}">还记得我们一起复读过的内容吗？</p>
+                        <p class="text-color text-highlight" v-animate="{value: 'slideInDown', delay: 300}">"{{ viewData.topRepeat }}"</p>
+                        <p class="text-color" v-animate="{value: 'slideInDown', delay: 600}">一共复读了 <span class="text-highlight">{{ viewData.topRepeatCount }}</span> 次。</p>
+
+                    </div>
+                </div>
+
+                <img class="bottom-img infinite" v-animate="{value: 'pulse', delay: 300}" style="width: 200px;" src="./imgs/page2/bottom_left.png" alt="">
+                <img class="bottom-right-img infinite" v-animate="{value: 'pulse', delay: 600}" style="width: 200px" src="./imgs/page2/star_bottom_right.png" alt="">
+
+            </div>
+
+            <div class="page-5 page gradient">
+
+                <div class="tiles">
+                    <div class="full-w center-text">
+                        <img class="index999 lines-page2" src="./imgs/page2/lines.png">
+                        <div class="title-bg-page2">
+                            <span class="title other-page-title">{{viewData.title}}</span>
+                        </div>
+                    </div>
+
+                    <img class="right-img infinite" v-animate="{value: 'pulse'}" src="./imgs/page2/star_right.png" alt="">
+
+                    <div class="flex-1 other-page-bg">
+
+                        <p class="text-color" v-animate="{value: 'slideInDown'}"><span class="text-highlight">@{{ viewData.longestContentName }}</span>说：</p>
+                        <p class="text-color" v-animate="{value: 'slideInDown', delay: 300}">"{{ viewData.longestContent }}"</p>
+                        <p class="text-color" v-animate="{value: 'slideInDown', delay: 600}">这条最长的消息还有印象吗？</p>
+
+                    </div>
+                </div>
+
+                <img class="bottom-img infinite" v-animate="{value: 'pulse', delay: 300}" style="width: 200px;" src="./imgs/page2/bottom_left.png" alt="">
+                <img class="bottom-right-img infinite" v-animate="{value: 'pulse', delay: 600}" style="width: 200px" src="./imgs/page2/star_bottom_right.png" alt="">
+
+
+            </div>
+
+            <div class="page-6 page gradient">
+                <div class="tiles">
+                    <div class="full-w center-text">
+                        <img class="index999 lines-page2" src="./imgs/page2/lines.png">
+                        <div class="title-bg-page2">
+                            <span class="title other-page-title">{{viewData.title}}</span>
+                        </div>
+                    </div>
+
+                    <img class="right-img infinite" v-animate="{value: 'pulse'}" src="./imgs/page2/star_right.png" alt="">
+
+                    <div class="flex-1 other-page-bg" id="barChartBox">
+
+                        <div class="pd-box">
+                            <p class="text-color" v-animate="{value: 'slideInDown'}"><span class="text-highlight">{{ viewData.activeDate }}</span> 是我们的最活跃的时间</p>
+                            <p class="text-color" v-animate="{value: 'slideInDown', delay: 300}">一共发了<span class="text-highlight">{{ viewData.activeDateData }}</span>条消息。</p>
+                        </div>
+                        <div id="barChar" ref="barChar" :style="sizeForBarChart"></div>
+
+                    </div>
+                </div>
+
+                <img class="bottom-img infinite" v-animate="{value: 'pulse', delay: 300}" style="width: 200px;" src="./imgs/page2/bottom_left.png" alt="">
+                <img class="bottom-right-img infinite" v-animate="{value: 'pulse', delay: 600}" style="width: 200px" src="./imgs/page2/star_bottom_right.png" alt="">
+
+
+            </div>
+
+            <div class="page-7 page gradient">
+                <div class="tiles">
+                    <div class="full-w center-text">
+                        <img class="index999 lines-page2" src="./imgs/page2/lines.png">
+                        <div class="title-bg-page2">
+                            <span class="title other-page-title">{{viewData.title}}</span>
+                        </div>
+                    </div>
+
+                    <img class="right-img infinite" v-animate="{value: 'pulse'}" src="./imgs/page2/star_right.png" alt="">
+
+                    <div class="flex-1 other-page-bg">
+
+                        <div class="pd-box">
+                            <p class="text-color" v-animate="{value: 'slideInDown'}">在一天中，我们喜欢在<span class="text-highlight">{{ viewData.activePeriod }}</span>聊天</p>
+                            <p class="text-color" v-animate="{value: 'slideInDown', delay: 300}">那个时候的讨论一定很激烈吧！</p>
+                        </div>
+                        <div id="lineChar" ref="lineChar" :style="sizeForBarChart"></div>
+
+                    </div>
+                </div>
+
+                <img class="bottom-img infinite" v-animate="{value: 'pulse', delay: 300}" style="width: 200px;" src="./imgs/page2/bottom_left.png" alt="">
+                <img class="bottom-right-img infinite" v-animate="{value: 'pulse', delay: 600}" style="width: 200px" src="./imgs/page2/star_bottom_right.png" alt="">
+
+            </div>
+
+            <div class="page-8 page gradient">
+
+                <div class="tiles">
+                    <div class="full-w center-text">
+                        <img class="index999 lines-page2" src="./imgs/page2/lines.png">
+                        <div class="title-bg-page2">
+                            <span class="title other-page-title">{{viewData.title}}</span>
+                        </div>
+                    </div>
+
+
+
+                    <img class="right-img infinite" v-animate="{value: 'pulse'}" src="./imgs/page2/star_right.png" alt="">
+
+                    <div class="flex-1 other-page-bg last-page-bg">
+
+                        <div class="pd-box">
+
+                            <div>
+                                <p class="text-color text-highlight center-text" v-animate="{value: 'slideInDown'}" style="margin-bottom: 0">{{ viewData.name }}</p>
+                                <p class="text-color center-text" v-animate="{value: 'slideInDown', delay: 300}" style="margin-top: 0">总结</p>
+                            </div>
+
+                            <div class="line"></div>
+
+                            <p class="final-title text-color" v-animate="{value: 'slideInLeft'}"># 被提到了<span class="red">{{ viewData.topKeywordCount }}</span>次的关键词</p>
+                            <p class="text-highlight final-text" v-animate="{value: 'slideInLeft'}">{{ viewData.topKeyword }}</p>
+                            <div class="line"></div>
+
+                            <p class="final-title text-color" v-animate="{value: 'slideInRight'}"># 发了<span class="red">{{ viewData.maxWords }}</span>条消息的话痨</p>
+                            <p class="text-highlight final-text" v-animate="{value: 'slideInRight'}">@{{ viewData.maxWordName }}</p>
+                            <div class="line"></div>
+
+                            <p class="final-title text-color" v-animate="{value: 'slideInLeft'}" v-if="viewData.maxRepeat > 0"># 复读了<span class="red">{{ viewData.maxRepeat }}</span>次的复读机</p>
+                            <p class="text-highlight final-text" v-animate="{value: 'slideInLeft'}" v-if="viewData.maxRepeat > 0">@{{ viewData.maxRepeatName }}</p>
+                            <div class="line" v-if="viewData.maxRepeat > 0"></div>
+
+                            <p class="final-title text-color" v-animate="{value: 'slideInRight'}"># 发了<span class="red">{{ viewData.maxImg }}</span>张图的斗图王</p>
+                            <p class="text-highlight final-text" v-animate="{value: 'slideInRight'}">@{{ viewData.maxImgName }}</p>
+                            <div class="line"></div>
+
+                            <p class="final-title text-color" v-animate="{value: 'slideInLeft'}"># 活跃了<span class="red">{{ viewData.maxActive }}</span>天</p>
+                            <p class="text-highlight final-text" v-animate="{value: 'slideInLeft'}">@{{ viewData.maxActiveName }}</p>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <img class="bottom-img infinite" v-animate="{value: 'pulse', delay: 300}" style="width: 200px;" src="./imgs/page2/bottom_left.png" alt="">
+                <img class="bottom-right-img infinite" v-animate="{value: 'pulse', delay: 600}" style="width: 200px" src="./imgs/page2/star_bottom_right.png" alt="">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="./js/index.js"></script>
+</body>
+</html>

@@ -22,7 +22,7 @@
 10. 完整的更新功能，更新源为GitHub
 
 ## 快速入门
-1. 下载Release里面的.exe，安装并运行本软件 （目前只支持64位系统）
+1. 下载 [Release(Github)](https://github.com/ping-xiong/annual-report-builder/releases) 或者 [Release(码云)](https://gitee.com/LiangJiaping/annual-report-builder/releases) 里面的.exe文件，安装并运行本软件 （目前只支持64位系统）
 2. 选择QQ或者微信报告功能
 3. 选择导出的txt格式聊天记录
 4. 点击生成按钮
