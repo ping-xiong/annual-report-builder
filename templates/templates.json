@@ -28,6 +28,13 @@
     ],
     "img": [
         {
+            "name": "可爱风格",
+            "type": "group",
+            "path": "./img/default2",
+            "main": "/js/index.js",
+            "html": "index.html"
+        },
+        {
             "name": "极简风格",
             "type": "group",
             "path": "./img/default",
