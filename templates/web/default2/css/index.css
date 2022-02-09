@@ -259,6 +259,10 @@ p, h1, h2, h3, h4, h5{
     box-sizing: border-box;
 }
 
+.last-page-bg{
+    background-image: url("../imgs/lastPageBg.png");
+}
+
 .gradient{
     background-image: linear-gradient( #ffe99d, #ffda2c);
 }

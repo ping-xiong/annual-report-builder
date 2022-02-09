@@ -158,7 +158,7 @@
 
                     <img class="right-img infinite" v-animate="{value: 'pulse'}" src="./imgs/page2/star_right.png" alt="">
 
-                    <div class="flex-1 other-page-bg" id="barChartBox">
+                    <div class="flex-1 other-page-bg">
 
                         <div class="pd-box">
                             <p class="text-color" v-animate="{value: 'slideInDown'}"><span class="text-highlight">{{ viewData.activeDate }}</span> 是我们的最活跃的时间</p>
@@ -186,7 +186,7 @@
 
                     <img class="right-img infinite" v-animate="{value: 'pulse'}" src="./imgs/page2/star_right.png" alt="">
 
-                    <div class="flex-1 other-page-bg" id="barChartBox">
+                    <div class="flex-1 other-page-bg">
 
                         <div class="pd-box">
                             <p class="text-color" v-animate="{value: 'slideInDown'}">在一天中，我们喜欢在<span class="text-highlight">{{ viewData.activePeriod }}</span>聊天</p>
@@ -212,16 +212,18 @@
                         </div>
                     </div>
 
-                    <div style="margin-top: 40px">
-                        <p class="text-color text-highlight center-text" v-animate="{value: 'slideInDown'}">{{ viewData.name }}</p>
-                        <p class="text-color center-text" v-animate="{value: 'slideInDown', delay: 300}">总结</p>
-                    </div>
+
 
                     <img class="right-img infinite" v-animate="{value: 'pulse'}" src="./imgs/page2/star_right.png" alt="">
 
-                    <div class="flex-1 other-page-bg" id="barChartBox">
+                    <div class="flex-1 other-page-bg last-page-bg">
 
                         <div class="pd-box">
+
+                            <div>
+                                <p class="text-color text-highlight center-text" v-animate="{value: 'slideInDown'}" style="margin-bottom: 0">{{ viewData.name }}</p>
+                                <p class="text-color center-text" v-animate="{value: 'slideInDown', delay: 300}" style="margin-top: 0">总结</p>
+                            </div>
 
                             <div class="line"></div>
 
